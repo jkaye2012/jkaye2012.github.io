@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Organizing Chaos</title>
+    <link>https://jkaye2012.github.io/</link>
+    <description>Recent content on Organizing Chaos</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A bit about me</title>
+      <link>https://jkaye2012.github.io/about/</link>
+      <pubDate>Sun, 13 Dec 2020 13:28:13 -0700</pubDate>
+      
+      <guid>https://jkaye2012.github.io/about/</guid>
+      <description>Background   I&amp;#39;m currently the Head of Technology for Belleuve Capital, the research &amp;amp; development arm of Belvedere Trading. I enjoy working with many different programming languages to design robust and easily maintainable systems. I believe that embracing many different languages (and their corresponding communities) is a great way to expand one&amp;#39;s knowledge and understanding of software.
+ When I&amp;#39;m not working or writing code, I love lifting weights, skiing, hiking, and gaming.</description>
+    </item>
+    
+  </channel>
+</rss>
