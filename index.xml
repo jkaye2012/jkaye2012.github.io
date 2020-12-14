@@ -5,7 +5,18 @@
     <link>https://jkaye2012.github.io/</link>
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Dec 2020 18:13:18 -0700</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Creating a development blog</title>
+      <link>https://jkaye2012.github.io/posts/blog-genesis/</link>
+      <pubDate>Sun, 13 Dec 2020 18:13:18 -0700</pubDate>
+      
+      <guid>https://jkaye2012.github.io/posts/blog-genesis/</guid>
+      <description>Welcome to the inaugural post of Organizing Chaos!
+ I&amp;#39;m the type of person who loves to tinker with new pieces of technology. Recently, I&amp;#39;ve been experimenting with a few different technical ideas that I thought were worth writing about (stay tuned for future posts 😉), so naturally I started to get excited about the prospect of setting up a personal development blog for myself. After a weekend of research and experimentation, I&amp;#39;ve arrived at a very simple (yet effective!</description>
+    </item>
+    
     <item>
       <title>A bit about me</title>
       <link>https://jkaye2012.github.io/about/</link>
