@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="generator" content="Hugo 0.79.0" />
+	<meta name="generator" content="Hugo 0.92.2" />
 	
 	<title>Posts - Thoughts on software and technical leadership</title>
 
@@ -27,11 +27,10 @@
 <body class="scheme-darkbrown">
 
 
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-4 col-md-3 col-lg-3 sidebar">
-
-			
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 d-none d-md-block sidebar">
+      
 	<div class="sidebar-content">
 
 		<a href="https://jkaye2012.github.io"><h1>Organizing Chaos</h1></a>
@@ -64,24 +63,20 @@
 
 		
 
-		<p class="copyright">&copy; 2020. All rights reserved. </p>
+		<p class="copyright">&copy; 2022. All rights reserved. </p>
 		<p class="attr">Powered by <a href="http://gohugo.io">Hugo</a> &amp; <a href="https://github.com/ExchangeRate-API/strange-case">Strange Case</a> (inspired by <a href="https://github.com/poole/hyde">Hyde</a>).</p>
 
 	</div>
 
-
-			</div>
-			<div class="col-sm-7 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-3 content">
-
-				
-				<div class="post">
-
-					<div class="post-heading">
-						<h1><a href="https://jkaye2012.github.io/posts/blog-genesis/">Creating a development blog</a></h1>
-						<span>Dec 13, 2020</span>
-					</div>
-
-					
+    </div>
+    <div class="col-md-9 ml-sm-auto col-lg-9 pt-3 px-4" role="main">
+      
+      <div class="post">
+        <div class="post-heading">
+          <h1><a href="https://jkaye2012.github.io/posts/blog-genesis/">Creating a development blog</a></h1>
+          <span>Dec 13, 2020</span>
+        </div>
+        
 <p>
 Welcome to the inaugural post of Organizing Chaos!</p>
 <p>
@@ -104,24 +99,16 @@ Requirements
 <li>
 <p>For the author:</p>
 <ul>
-<li>
-<p>Simple: writing a blog isn&#39;t rocket science, and I don&#39;t need anything fancy. Above all else, the setup should be easy to understand and work with.</p>
-</li>
-<li>
-<p>Efficient: when writing individual posts, the author shouldn&#39;t have to worry about the &#34;blogging framework&#34;. The ideal workflow is to write a post and publish it!</p>
-</li>
+<li>Simple: writing a blog isn&#39;t rocket science, and I don&#39;t need anything fancy. Above all else, the setup should be easy to understand and work with.</li>
+<li>Efficient: when writing individual posts, the author shouldn&#39;t have to worry about the &#34;blogging framework&#34;. The ideal workflow is to write a post and publish it!</li>
 </ul>
 </li>
 <li>
 <p>For the user:</p>
 <ul>
-<li>
-<p>Pretty: while it&#39;s unlikely that I&#39;ll design a visual masterpiece, the blog should look nice on both desktop and mobile displays.</p>
-</li>
-<li>
-<p>No-nonsense: when viewing the blog&#39;s index or any individual post, the reader should have a consistent, no-frills experience. Someone visiting this blog is probably
-here to read a post, not opt-in to cookies or sign up for a newsletter.</p>
-</li>
+<li>Pretty: while it&#39;s unlikely that I&#39;ll design a visual masterpiece, the blog should look nice on both desktop and mobile displays.</li>
+<li>No-nonsense: when viewing the blog&#39;s index or any individual post, the reader should have a consistent, no-frills experience. Someone visiting this blog is probably
+here to read a post, not opt-in to cookies or sign up for a newsletter.</li>
 </ul>
 </li>
 </ul>
@@ -140,12 +127,8 @@ Site generation
   Unfortunately, deciding <em>which</em> static site generator to use is not necessarily so simple. There are a plethora of options available, and many of the differences between
   them are minor. Because I&#39;m not interested in using JavaScript for this blog, the choice ultimately boiled down to two contenders:</p>
 <ol>
-<li>
-<p><a href="https://jekyllrb.com/">Jekyll</a>, the veteran mainstay</p>
-</li>
-<li>
-<p><a href="https://gohugo.io/">Hugo</a>, a more modern take on Jekyll&#39;s core ideas</p>
-</li>
+<li><a href="https://jekyllrb.com/">Jekyll</a>, the veteran mainstay</li>
+<li><a href="https://gohugo.io/">Hugo</a>, a more modern take on Jekyll&#39;s core ideas</li>
 </ol>
 <p>The TL;DR for the rest of this section is: I picked Hugo. There&#39;s a complete example of what a Hugo site looks like and some very basic usage examples in the last section
   of the post. The important thing to know about the Hugo choice is that, after less than an hour of minor theme modification, the blog is now at the point where authoring a new
@@ -201,7 +184,7 @@ Org-babel
    this post, I can embed a simple block of Haskell code. When I press a key in my editor, the block is executed <em>directly within the post</em>, meaning that I never have to stop
    writing my blog post to write my code or execute my examples! After the results block I&#39;ll include a GIF of the process so that you can see how it works.</p>
 <div class="src src-haskell">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">putStrLn</span> <span style="color:#e6db74">&#34;Hello, Hugo! And again&#34;</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-haskell" data-lang="haskell"><span style="color:#a6e22e">putStrLn</span> <span style="color:#e6db74">&#34;Hello, Hugo! And again&#34;</span></code></pre></div>
 </div>
 <pre class="example">
 Hello, Hugo! And again
@@ -241,7 +224,7 @@ Putting it all together
 <p>
   Here&#39;s the complete authoring and deployment process that I used to generate this post:</p>
 <div class="src src-bash">
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ~/git/blog-hugo
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ~/git/blog-hugo
 hugo new posts/blog-genesis.org <span style="color:#75715e"># Create the post file</span>
 emacs -nw content/posts/blog-genesis.org <span style="color:#75715e"># Write the post</span>
 hugo <span style="color:#75715e"># Build the site</span>
@@ -270,21 +253,18 @@ Closing notes
 </div>
 </div>
 
+      </div>
+      
 
-				</div>
-				
+      <div class="text-center">
+        
+      </div>
 
-				<div class="text-center">
-					
-
-
-				</div>
-
-			</div>
-			<div class="col-sm-1 col-md-3 col-md-4">
-			</div>
-		</div>
-	</div>
+    </div>
+    <div class="col-sm-1 col-md-3 col-md-4 border-left">
+    </div>
+  </div>
+</div>
 
 
 
