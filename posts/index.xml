@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Oct 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go slow to move fast</title>
+      <link>https://jkaye2012.github.io/posts/go-slow-move-fast/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://jkaye2012.github.io/posts/go-slow-move-fast/</guid>
+      <description>Engineering teams can often improve their long-term development velocity by slowing down in the short term   A shared misunderstanding Technical debt is an often debated topic. Like most concepts in software, it isn&amp;rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&amp;rsquo;t exist, while others feel that technical debt is the most important aspect of product development.</description>
+    </item>
+    
     <item>
       <title>Striped development</title>
       <link>https://jkaye2012.github.io/posts/striped-development/</link>
