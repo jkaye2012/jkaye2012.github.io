@@ -1,118 +1,96 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="generator" content="Hugo 0.92.2" />
-	
-	<title>Go slow to move fast - Thoughts on software and technical leadership</title>
+  <head>
+    <title>Go slow to move fast | Organizing Chaos</title>
 
-	
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-	<link href="https://jkaye2012.github.io/css/bootstrap.min.css" rel="stylesheet">
-	<link href="https://jkaye2012.github.io/css/strange-case.css" rel="stylesheet">
-	
-
-	
-	
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-
-	
-	<link href="" rel="alternate" type="application/rss+xml" title="Organizing Chaos" />
-</head>
-<body class="scheme-darkbrown">
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Engineering teams can often improve their long-term development velocity by slowing down in the short term  A shared misunderstanding 🔗Technical debt is an often debated topic. Like most concepts in software, it isn&rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&rsquo;t exist, while others feel that technical debt is the most important aspect of product development.">
+<meta name="generator" content="Hugo 0.92.2" />
 
 
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-3 col-lg-3 d-none d-md-block sidebar">
-      Contents
-      <nav id="TableOfContents">
-  <ul>
-    <li><a href="#a-shared-misunderstanding">A shared misunderstanding</a></li>
-    <li><a href="#technical-debt-should-be-intentional">Technical debt should be intentional</a></li>
-    <li><a href="#real-world-example">Real world example</a></li>
-    <li><a href="#slow-is-smooth-smooth-is-fast">Slow is smooth, smooth is fast</a></li>
-    <li><a href="#conclusion">Conclusion</a></li>
-  </ul>
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.iocss/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+
+	
+	  <a class="button" href="https://jkaye2012.github.io/index.xml">Subscribe</a>
+	
 </nav>
-      <div class="sidebar-content">
 
-	<a href="https://jkaye2012.github.io">
-		<h1>Organizing Chaos</h1>
-	</a>
-	<p>Thoughts on software and technical leadership</p>
 
-	
+    <main class="main">
+      
 
-	<ul class="sidebar-menus sidebar-icons">
-		
-		<li><a href="https://github.com/jkaye2012"><img src="/images/github.png"></img></a></li>
-		
-		<li><a href="https://www.linkedin.com/in/jordan-kaye-8bb64537/"><img width="32px" height="32px" src="/images/linkedin.png"></img></a></li>
-		
-		<li>
-			</li>
-	</ul>
+<section id="single">
+    <h1 class="title">Go slow to move fast</h1>
 
-	<ul class="sidebar-menus">
-		
-		<li>&#187; <a href="/about">About me</a></li>
-		
-	</ul>
-
-	<div class="sidebar-recent hidden-xs">
-		<p>Recent Posts:</p>
-		<ul>
-			
-			<li><a href="https://jkaye2012.github.io/posts/go-slow-move-fast/">Go slow to move fast</a></li>
-			
-			<li><a href="https://jkaye2012.github.io/posts/striped-development/">Striped development</a></li>
-			
-			<li><a href="https://jkaye2012.github.io/posts/blog-genesis/">Creating a development blog</a></li>
-			
-		</ul>
-	</div>
-
-	
-
-	<p class="copyright">&copy; 2023. All rights
-		reserved. </p>
-	<p class="attr">Powered by <a href="http://gohugo.io">Hugo</a> &amp; <a
-			href="https://github.com/ExchangeRate-API/strange-case">Strange Case</a> (inspired by <a
-			href="https://github.com/poole/hyde">Hyde</a>).</p>
-
-</div>
+    <div class="tip">
+        <time datetime="2023-03-18 00:00:00 &#43;0000 UTC">Mar 18, 2023</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          2093 words
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          10 minute read
+        </span>
     </div>
 
-    <div class="col-md-9 ml-sm-auto col-lg-9 pt-3 px-4" role="main">
-      <div class="post">
-        <div class="post-heading">
-          <h1>Go slow to move fast</h1>
-          <span class="post-date"># Mar 18, 2023</span>
-        </div>
-        
+    
+    
+
+
+    <div class="content">
+      
 <hr />
 <figure class="text-center">
-  <blockquote class="blockquote">
     <p class="font-italic">
       
 Engineering teams can often improve their long-term development velocity by slowing down in the short term
 
     </p>
-  </blockquote>
 </figure>
 <hr />
 
-<h2 id="a-shared-misunderstanding">A shared misunderstanding</h2>
-<p>Technical debt is an often debated topic. Like most concepts in software, it isn&rsquo;t particularly difficult to find
+<h2 id="a-shared-misunderstanding">A shared misunderstanding <a href="#a-shared-misunderstanding" class="anchor">🔗</a></h2><p>Technical debt is an often debated topic. Like most concepts in software, it isn&rsquo;t particularly difficult to find
 arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some
-believe that <a href="https://thehftguy.com/2020/08/26/technical-debt-doesnt-exist/">technical debt doesn&rsquo;t exist</a>, while others
-feel that <a href="https://www.forbes.com/sites/forbestechcouncil/2022/05/09/technical-debt-the-most-important-concept-of-product-development/?sh=33c6b36792b4">technical debt is the most important aspect of product
+believe that <a href="https://thehftguy.com/2020/08/26/technical-debt-doesnt-exist/" target="_blank" rel="noopener">technical debt doesn&rsquo;t exist</a>, while others
+feel that <a href="https://www.forbes.com/sites/forbestechcouncil/2022/05/09/technical-debt-the-most-important-concept-of-product-development/?sh=33c6b36792b4" target="_blank" rel="noopener">technical debt is the most important aspect of product
 development</a>.
 From the conversations that I&rsquo;ve had with others in the industry, both within my place of work and with technical
 leaders from other companies, I&rsquo;ve come to believe that one of the root causes of the gap between these viewpoints is
@@ -125,8 +103,8 @@ amounts of time struggling against implementations and concepts that make it mor
 otherwise could be. An interesting realization (and something that makes this conversation particularly difficult) is
 that <em>both groups can be right at the same time</em>. This can be true only because the two groups are misunderstanding one
 another. But where does this misunderstanding come from?</p>
-<p>The phrase &ldquo;technical debt&rdquo; was originally coined by <a href="https://en.wikipedia.org/wiki/Ward_Cunningham">Ward Cunningham</a>,
-one of the co-authors of the Agile Manifesto. He since <a href="http://wiki.c2.com/?WardExplainsDebtMetaphor">explained what he meant when he originated the
+<p>The phrase &ldquo;technical debt&rdquo; was originally coined by <a href="https://en.wikipedia.org/wiki/Ward_Cunningham" target="_blank" rel="noopener">Ward Cunningham</a>,
+one of the co-authors of the Agile Manifesto. He since <a href="http://wiki.c2.com/?WardExplainsDebtMetaphor" target="_blank" rel="noopener">explained what he meant when he originated the
 term</a>. Two excerpts from his explanation are particularly important to the
 ideas that I want to discuss:</p>
 <blockquote>
@@ -150,8 +128,7 @@ larger their negative impact.</p>
 <p>The misunderstanding between the two camps is caused at least in part by the fact that debt is so often associated with
 anything that an engineering team perceives to slow them down. I believe this situation is inevitable with any post-hoc
 debt classification strategy, and therefore should be avoided in lieu of more effective options.</p>
-<h2 id="technical-debt-should-be-intentional">Technical debt should be intentional</h2>
-<p>I believe that technical debt is most useful as a concept when it&rsquo;s thought of as something that&rsquo;s taken on <em>knowingly</em>.
+<h2 id="technical-debt-should-be-intentional">Technical debt should be intentional <a href="#technical-debt-should-be-intentional" class="anchor">🔗</a></h2><p>I believe that technical debt is most useful as a concept when it&rsquo;s thought of as something that&rsquo;s taken on <em>knowingly</em>.
 If we think about taking the debt metaphor literally, this is also the definition that seems to make the most sense
 considering that financial debt isn&rsquo;t something that can happen to someone without their knowledge. When we take on
 financial debt, we&rsquo;re accepting a greater total payment over time in order to buy something that we wouldn&rsquo;t otherwise
@@ -185,12 +162,11 @@ understanding between developers and non-technical personnel of what debt means 
 to. It requires at least a baseline level of buy-in from an organization that overall system quality is important to the
 bottom line. None of these tasks are trivial, but neither are they difficult, and I believe the effort is well worth the
 payoff.</p>
-<h2 id="real-world-example">Real world example</h2>
-<p>As a more concrete demonstration of what these ideas look like, I&rsquo;ve pulled some high-level data from one of my teams'
+<h2 id="real-world-example">Real world example <a href="#real-world-example" class="anchor">🔗</a></h2><p>As a more concrete demonstration of what these ideas look like, I&rsquo;ve pulled some high-level data from one of my teams'
 most recent deliveries. Here is that team&rsquo;s 6-month debt trend:</p>
 
 
-<img  src="/images/go-slow-debt.png"   title="We use this data to inform our SDLC"  />
+<img  class="oc-img" src="/images/go-slow-debt.png"   title="We use this data to inform our SDLC"  />
 
 <p />
 
@@ -201,26 +177,25 @@ development; throughout Q1, they paid down a large portion of the debt that they
 <p>Crucially, we were able to use the data available from this methodology as an aid to explain the importance of this work
 to stakeholders and help them understand why short-term velocity on further functionality for the system would be
 reduced while a portion of development time was spent paying down this debt.</p>
-<p>I found it interesting to compare this trend to the ideal debt charts put forth in <a href="https://blog.crisp.se/2013/10/11/henrikkniberg/good-and-bad-technical-debt">yet another blog post about technical
+<p>I found it interesting to compare this trend to the ideal debt charts put forth in <a href="https://blog.crisp.se/2013/10/11/henrikkniberg/good-and-bad-technical-debt" target="_blank" rel="noopener">yet another blog post about technical
 debt</a>. Here&rsquo;s an idealized chart compared
 to the team&rsquo;s debt baseline and ceiling:</p>
 <p>
 
-<img  src="/images/go-slow-ideal.png"   title="Idealized debt"  />
+<img  class="oc-img" src="/images/go-slow-ideal.png"   title="Idealized debt"  />
 
 <p />
 
 
 
-<img  src="/images/go-slow-overlay.png"   title="Baseline and ceiling in action"  />
+<img  class="oc-img" src="/images/go-slow-overlay.png"   title="Baseline and ceiling in action"  />
 
 <p />
 </p>
 <p>We can see that the debt management may not be completely ideal, but the team has been able to successfully pay their
 debt down throughout the course of a quarter and are once again much closer to their debt baseline than they are to
 their ceiling.</p>
-<h2 id="slow-is-smooth-smooth-is-fast">Slow is smooth, smooth is fast</h2>
-<p>Following these ideas, one of the mantras that I use with all of my development teams is &ldquo;We have to go slow if we want
+<h2 id="slow-is-smooth-smooth-is-fast">Slow is smooth, smooth is fast <a href="#slow-is-smooth-smooth-is-fast" class="anchor">🔗</a></h2><p>Following these ideas, one of the mantras that I use with all of my development teams is &ldquo;We have to go slow if we want
 to move fast&rdquo;. It sounds a bit silly perhaps, but I like sayings that will stick with people and the idea is simple:
 slowing down gives us more time to think, more time to think leads to better designs, and better designs lend themselves
 to easier change in the future. There are many situations where incurring debt makes sense, but there are at least as
@@ -252,8 +227,7 @@ to decrease as the other engineers gain familiarity and proficiency with the iss
 reached that point, we now have three engineers capable of this type of issue resolution instead of only one. We made
 the intentional decision to allow progress to be slower in the short term in order to effectively triple our longer term
 velocity/capacity for this type of work.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>There&rsquo;s isn&rsquo;t a universal answer to the best way to balance development velocity against technical debt. Thinking of
+<h2 id="conclusion">Conclusion <a href="#conclusion" class="anchor">🔗</a></h2><p>There&rsquo;s isn&rsquo;t a universal answer to the best way to balance development velocity against technical debt. Thinking of
 debt as something taken on intentionally by a team to increase their short-term velocity at the expense of future work
 is an easy to apply strategy that has many benefits to engineering teams while also simplifying the concept for less
 technical individuals. By measuring accrued debt against long-term baselines and ceilings, engineering managers can get
@@ -262,20 +236,66 @@ high-level discussions with stakeholders.</p>
 <p>If your goal to to increase your teams' overall development velocity in the long term, remember that you may want to
 slow down so that you can move fast.</p>
 
-      </div>
     </div>
-  </div>
+
+    
+    
+    
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
 </div>
 
+    
+
+    <div class="copyright">
+    
+        Copyright 2023 | Jordan Kaye
+    
+    </div>
+
+    
+</footer>
 
 
 
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-<script src="https://jkaye2012.github.io/js/bootstrap.min.js"></script>
-
-</body>
+  </body>
 </html>
