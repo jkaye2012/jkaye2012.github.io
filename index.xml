@@ -24,7 +24,7 @@ As a technologist, I enjoy exploring different programming languages and paradig
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
       
       <guid>https://jkaye2012.github.io/posts/flexible-systems/</guid>
-      <description>Most decisions that you make are not nearly as important as your ability to change them in the future.  When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. For technical systems one may be worried about which logging framework to use or how the systems&#39; concurrency model should work. For human systems, the concern may instead be focused on how many meetings to hold, with whom, and how often.</description>
+      <description>Most decisions that you make are not nearly as important as your ability to change them in the future.  When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. Technical systems may raise concerns about choosing the appropriate logging framework or determining the most effective concurrency model. Human systems may instead be concerned with how many meetings to hold, with whom, and how often.</description>
     </item>
     
     <item>
