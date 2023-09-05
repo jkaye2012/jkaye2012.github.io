@@ -6,7 +6,17 @@
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 05 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Simplicity isn&#39;t easy</title>
+      <link>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</link>
+      <pubDate>Tue, 05 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</guid>
+      <description>Simple is the opposite of complex, easy is the opposite of difficult  I spend a lot of time thinking about complexity. I read an essay recently about complexity and cognitive load in software engineering that touches on a specific point that I think is important to the professional development of software: the difference between simplicity and ease.
+Like many engineers, I don&amp;rsquo;t enjoy working within overly complex systems. The cognitive load required to get anything done within such code bases is far greater than it should be.</description>
+    </item>
+    
     <item>
       <title>Cheat codes</title>
       <link>https://jkaye2012.github.io/posts/cheat-codes/</link>
