@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Software engineering is about thinking, not typing | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Weeks of coding can save you hours of planning  Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to an extreme that can be unhelpful. While it&rsquo;s almost always a good idea to maintain the ability to iterate quickly and change our minds, that doesn&rsquo;t mean that one shouldn&rsquo;t take time to think before they begin to act.">
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Software engineering is about thinking, not typing</h1>
+
+    <div class="tip">
+        <time datetime="2023-10-11 00:00:00 &#43;0000 UTC">Oct 11, 2023</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          1697 words
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          8 minute read
+        </span>
+    </div>
+
+    
+    
+
+
+    <div class="content">
+      
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+Weeks of coding can save you hours of planning
+
+    </p>
+</figure>
+<hr />
+
+<p>Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways
+that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly
+ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to
+an extreme that can be unhelpful. While it&rsquo;s almost always a good idea to maintain the ability to iterate quickly and
+<a href="https://jkaye2012.github.io/posts/flexible-systems/">change our minds</a>, that doesn&rsquo;t mean that one shouldn&rsquo;t take time to think before
+they begin to act.</p>
+<p>When confronted with a problem, rather than jumping directly to thoughts of &ldquo;how can I fix this with code&rdquo;, it&rsquo;s often
+more effective to first carefully consider the universe of potential solutions. By the time code begins flowing into an
+editor, there should be a good idea of an overall plan; what is it that is actually being built towards? What concepts
+are being programming against? Should new foundational concepts be introduced to this region of code to facilitate the
+implementation? Which preexisting concepts will have to be modified? Without answers to these questions and others like
+it, it&rsquo;s very easy to end up just &ldquo;coding by accident&rdquo;, wading through unforeseen problem after problem until eventually
+solution emerges that seems to work well enough, but most likely isn&rsquo;t implemented as well as it could&rsquo;ve been.</p>
+<p>The more inexperienced an engineer is, the stranger this may sound to them. After all, their job is to write code, so how
+can <em>thinking</em> be more valuable than actually <em>doing</em>? One of the best explanations can be found in a pithy quote for
+which I&rsquo;ve been unable to find a source:</p>
+<blockquote>
+<p>Weeks of coding can save you hours of planning.</p>
+</blockquote>
+<p>The point is that it doesn&rsquo;t really matter how quickly someone is able to write code if they&rsquo;re writing code for the
+wrong reasons. One of the worst possible outcomes for a software engineer is to spend days or weeks working on a solution only
+to learn that they&rsquo;ve been building the wrong the entire time. Of course, this usually isn&rsquo;t solely the fault of the
+engineer alone (and agile methodologies should help to identify problems like this earlier in the process), but the fact
+remains that there is almost always more than each of us can be doing as individuals to
+make sure that we&rsquo;re solving the right problems in the best way available to us.</p>
+<p>The idea can also be difficult to implement in practice for many reasons:</p>
+<ul>
+<li>If the problem is completely novel, attempting to write some code can be a good way to better understand the problem
+space</li>
+<li>Writing code is, for many engineers, a lot more fun and approachable than sitting around and thinking about problems
+in the abstract</li>
+<li>There is a lot of uncertainty involved in abstract thought of this nature; how does one know that they&rsquo;re thinking
+about the right things?</li>
+<li>Spending too much time thinking and planning ahead of time can be just as bad as not spending enough; how does one
+know when to stop thinking and start doing?</li>
+</ul>
+<p>One approach that I like to use personally is to identify what I think of as the <em>core concepts</em> that underlie the
+problem at hand. Most problems can be decomposed into constituent ideas that are more or less independent from one
+another. This should sound familiar to most engineers, as this is very similar to the important software design concepts
+of <a href="https://en.wikipedia.org/wiki/Coupling_%28computer_programming%29" target="_blank" rel="noopener">coupling</a> and
+<a href="https://en.wikipedia.org/wiki/Cohesion_%28computer_science%29" target="_blank" rel="noopener">cohesion</a>. While decoupling is a mostly technical process,
+identification of these core concepts is a theoretical one. The goal is to search for the ideas that exist within the
+problem itself so that we can build our technical boundaries along the conceptual boundaries that exist within the core
+of the problem at hand. More specifically, the best outcome is when the identified concepts are loosely coupled, yet
+highly cohesive.</p>
+<p>As a practical example, consider a command-line application that can generate <a href="https://containers.dev/" target="_blank" rel="noopener">devcontainers</a>
+specifications for users by combining tools together declaratively rather than forcing them to write the configuration
+files by hand. Writing devcontainers specifications and their corresponding Dockerfiles can be a bit a pain because of
+the unexpected interactions between the running container and the user&rsquo;s development environment; for example, the
+container&rsquo;s timezone should be synchronized with that of the user, the UID of the user in the container should match the
+UID of the external user, and SSH passthrough authentication should &ldquo;just work&rdquo;, but these are not features that
+devcontainers provides for the user. The idea is that the tool should be able to take a simplified configuration file
+that allows the user to say: &ldquo;I want to use Rust, Git, Vim, and the <a href="https://www.oilshell.org/" target="_blank" rel="noopener">Oil shell</a>&rdquo;, click a
+button, and get a fully-instrumented and repeatable development environment.</p>
+<p>Consider challenging yourself to put some thought into this problem: what are some core concepts that you can identify
+that might make sense to construct this tool around? Once you&rsquo;re done, expand the section below to see what I
+identified. Are your concepts different from mine? Perhaps I&rsquo;ve missed something!</p>
+
+<details>
+	<summary>Core Concepts</summary>
+
+<ul>
+<li> Repository: the highest-level construct supported by the tooling; usually a versioned-controlled source repository,
+  can hold one or more Projects
+<li> Project: a desired development experience associated with a subset of its Repository. Has a single Configuration at
+  any point in time
+<li> Configuration: a point-in-time instance of a Project. Each Configuration generates a single unique Devcontainers spec and associated Docker image
+<li> Host: the host environment from which the tool is being executed, used as a source for information that must be
+  injected into a Configuration
+<li> Environment: an actively running instance of a Configuration, usually managed by the Editor
+<li> Editor: the source code editor that will be used to run the Devcontainer
+<li> Tool: an individual piece of functionality that can be composed with other Tools to provide a development environment
+</ul>
+</details>
+
+<p>While this is a simplified list, it should be clear that these are concepts associated with the problem itself rather than individual
+technical decisions. Nothing in the list above prescribes <em>how</em> the tool will deal with any of these concepts, only that
+they exist and should be considered during development. That&rsquo;s part of why it&rsquo;s important to think before writing code:
+we want to avoid <a href="https://en.wikipedia.org/wiki/Anchoring_effect" target="_blank" rel="noopener">anchoring</a> our thought process to what we have done in
+the past.</p>
+<p>More technical questions then arise from consideration of these concepts:</p>
+<ul>
+<li>Should Repositories be restricted to containing only a single project? How might that effect users of
+<a href="https://monorepo.tools/" target="_blank" rel="noopener">monorepos</a>?</li>
+<li>It&rsquo;s possible that running Environments will drift from the current Configuration (if an environment is left running
+after the configuration is modified); does this matter?</li>
+<li>The Configuration is likely to have to understand the different Editors supported by the tool; how should that be
+accomplished?</li>
+<li>How should the tool deal with different Host platforms?</li>
+<li>How can Tools be composed with one another when generating a final specification?</li>
+</ul>
+<p>And from here, the ability to begin iterative development as usual against these concept emerges.</p>
+<p>It&rsquo;s worth mentioning explicitly that I&rsquo;m not advocating for design by committee, waterfall development, architecture
+astronauts, or any of the other anti-patterns that frustrate engineers who really just want to get things done. Thinking
+before typing is an <em>individual</em> activity, something that every engineer can ensure that they&rsquo;re doing to potentially
+improve the final results of the work that they create. Writing some code to understand the problem space may be a great
+idea, for example - but if you&rsquo;re going to get started right away, you may do well to remind yourself to consider
+throwing that experimental code
+away and <em>think about the problem</em> before you stray too deeply down any single path. Especially if problem discovery is
+the purpose of a prototype, the possibility of falling into the <a href="https://xyproblem.info" target="_blank" rel="noopener">XY problem</a> is ever-present.</p>
+<p>Another aspect of this idea that I find very useful is that it can be used to help explain some of the difficulties
+involved in software engineering to less technical individuals, especially stakeholders and executives. Measurement of
+engineering teams, for example, is a hot topic lately off the tails of the success of <a href="https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance" target="_blank" rel="noopener">DORA
+metrics</a>, the
+relatively recent release of the <a href="https://queue.acm.org/detail.cfm?id=3454124" target="_blank" rel="noopener">SPACE framework</a>, and then the
+unfortunate <a href="https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/yes-you-can-measure-software-developer-productivity" target="_blank" rel="noopener">McKinsey
+system</a>
+that has <a href="https://newsletter.pragmaticengineer.com/p/measuring-developer-productivity" target="_blank" rel="noopener">drawn some misgivings</a> from
+experienced engineering leaders.</p>
+<p>SPACE in particular does a good job of acknowledging that there is much more to
+engineering than the code that an engineer produces. While it can be difficult for many to understand the details of the
+development process, it&rsquo;s part of the job of an engineering leader to advocate for their teams and help stakeholders
+understand where time is being spent and why things take as long as they do. Focusing on the importance of planning,
+design, and thinking can help leaders explain these concepts in terms that anyone should be able to understand
+regardless of their technical acumen.</p>
+<p>Because most software engineering is an inherently creative endeavor, it&rsquo;s difficult to distill the daily activities of
+an engineer down to the type of cleanly measurable metrics that many executives (particularly those with less
+familiarity with the engineering process) would like to see. The <a href="https://noidea.dog/glue" target="_blank" rel="noopener">glue engineer</a> for example
+may be critical to the overall function of their team, but any attempts to measure that individual&rsquo;s impact by focusing
+on their issue completion or commit history is bound to fail in the general case. This is why experienced engineering
+leaders try to focus more on measuring <a href="https://martinfowler.com/bliki/OutcomeOverOutput.html" target="_blank" rel="noopener">outcomes over outputs</a>.</p>
+<p>The most interesting aspect of this difficulty of measurement is that the difficulty tends to grow with the seniority of
+the engineer in question. The more experienced and impactful someone is, the more likely it is that they&rsquo;re impact is
+coming from intangibles like their ability to influence others. While this is a generalization, there&rsquo;s a good reason
+that many of the <a href="https://progression.fyi/" target="_blank" rel="noopener">open source engineering progression frameworks</a> focus on influence rather
+than output at their highest engineering levels. These are just a few of the tools that can be used to help socialize
+this type of understanding of the SDLC throughout an organization.</p>
+<p>So, every now and then considering reminding your engineers: software engineering is about thinking, not typing.</p>
+
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="https://jkaye2012.github.io/tags/leadership">leadership</a>
+            
+                <a href="https://jkaye2012.github.io/tags/software">software</a>
+            
+        </div>
+    
+    
+    
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+        Copyright 2023 | Jordan Kaye
+    
+    </div>
+
+    
+</footer>
+
+
+
+  </body>
+</html>

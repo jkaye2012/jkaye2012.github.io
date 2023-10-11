@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 11 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Software engineering is about thinking, not typing</title>
+      <link>https://jkaye2012.github.io/posts/thinking-not-typing/</link>
+      <pubDate>Wed, 11 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://jkaye2012.github.io/posts/thinking-not-typing/</guid>
+      <description>Weeks of coding can save you hours of planning  Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to an extreme that can be unhelpful. While it&amp;rsquo;s almost always a good idea to maintain the ability to iterate quickly and change our minds, that doesn&amp;rsquo;t mean that one shouldn&amp;rsquo;t take time to think before they begin to act.</description>
+    </item>
+    
     <item>
       <title>Simplicity isn&#39;t easy</title>
       <link>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</link>
