@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Minimize global process | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams  Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &ldquo;reducing duplicate effort for developers&rdquo;, to which another replied:
+ I have worked for a company that forced all engineers to use the same shitty CI/CD system.">
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">Minimize global process</h1>
+
+  <div class="tip">
+    <time datetime="2023-11-15 00:00:00 &#43;0000 UTC">Nov 15, 2023</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      2182 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      11 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams
+
+    </p>
+</figure>
+<hr />
+
+<p>Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one
+of the main benefits of an effective Platform was &ldquo;reducing duplicate effort for developers&rdquo;, to which another replied:</p>
+<blockquote>
+<p>I have worked for a company that forced all engineers to use the same shitty CI/CD system. The Platform team “reduced
+duplicate efforts” such that no-one maintained their own CI/CD system anymore, but the fact was that the centralized
+solution was shitty, it made all engineer’s lives worse.</p>
+<p>If you are to remove duplicate efforts you need to be very certain that that solution also is a better one than what
+engineers have come up with themselves (generally, the product engineers know the problem they have better than a
+platform team)&quot;.</p>
+</blockquote>
+<p>I agreed wholeheartedly with their point, but also couldn&rsquo;t help but think that the core message of this statement
+extends far beyond the details of Platform Engineering. The idea that we should be able to simplify workflows or reduce
+duplicate effort is very common among technical leaders; after all, many of us were once engineers ourselves and
+optimizing <a href="../lexicon/index.md#system">systems</a> is second nature. Removing unnecessary work sounds great on the
+surface, so it&rsquo;s not uncommon to see leaders who strive for global consistency across their entire organization.</p>
+<p>Unfortunately, the complex dynamics of high functioning teams means that the situation is not as simple as we might like
+it to be.</p>
+<p>The benefits of global consistency are easy to understand, but the drawbacks are not so immediately obvious. I&rsquo;m a
+strong believer that autonomy is one of the most important traits of a high-performing engineering team, and global
+processes are at odds with local autonomy by definition. While it&rsquo;s important to have some level of global consistency
+across teams, I believe that most organizations would be better served by minimizing their global processes in favor of
+more localized decisions.</p>
+<h1 id="the-role-of-autonomy-in-software-engineering">The role of autonomy in software engineering <a href="#the-role-of-autonomy-in-software-engineering" class="anchor">🔗</a></h1><p>Ultimately, the purpose of an engineering team is to drive positive outcomes. We often reach for measurements
+of development workflows to understand the efficacy of a team, but even with very high velocity and high
+quality systems a team may not be effective if they aren&rsquo;t contributing to outcomes that further the goals of the
+business. Therefore, focusing on exactly how those outcomes are achieved is usually midguided, leading to concepts like
+<a href="https://martinfowler.com/bliki/OutcomeOverOutput.html" target="_blank" rel="noopener">outcomes over outputs</a>.</p>
+<p>Given that it&rsquo;s difficult to gauge the inner workings of the team from outside - and nearly impossible to do so across
+many different teams - it&rsquo;s usually more impactful to encourage teams to work in the way that they find are most
+effective for them. Giving a team autonomy over the way that they work has many potential benefits:</p>
+<ul>
+<li>Members of the team will feel greater ownership over their work</li>
+<li>Different teams gain the ability to work in radically different ways; <a href="https://ensembleprogramming.xyz/" target="_blank" rel="noopener">ensemble
+programming</a> being one such example</li>
+<li>The team will have the ability to <a href="./flexible-systems.md">change their localized process</a> quickly and easily</li>
+<li>Engineers will no longer feel burdened by undue process as they now have a large hand in controlling it</li>
+</ul>
+<p>The last point is particularly salient and is something that most professional engineers and leaders are likely to have
+encountered at some point during their career. Many engineers have had bad experiences with process of all kinds: why
+should I spend time &ldquo;pushing paper&rdquo; when I could be spending time getting things done?! It can be frustrating to hear
+from a manager&rsquo;s perspective, but the core message makes sense: effective processes should always be facilitating work,
+not getting in the way of it. A process that people find frustrating on a day-to-day basis is probably not something
+that is worth keeping around.</p>
+<p>The more generic and global a process is, the less likely it is that the process can be easily understood in a more
+localized context. The individual who proposed and implemented the process likely did so with the organization&rsquo;s best
+interests in mind, but by the time that process makes its way into the individual engineering teams, most of the context
+behind <em>why</em> that process is important is likely to have been lost. This, I believe, is a large factor in general
+frustration with SDLC processes that are adopted globally in most companies. Individual teams find themselves going
+through the motions without an understanding of why they&rsquo;re doing so or what benefit it has to them.</p>
+<p>Teams that are responsible for their own processes have a great incentive to care about them. If something is
+frustrating the engineers on a team, they know that they have the ability to change it, so it&rsquo;s in their best interest
+to raise their thoughts with the rest of the team. Because the processes affect only the individual team, there is a
+very low impediment to making such changes, and change fatigue is minimized because the suggested changes are coming
+from within the team itself. Through this method of iterative improvement, over time, each team should eventually reach
+an equilibrium where things are running smoothly: the Goldilocks zone of localized process.</p>
+<h1 id="the-benefits-of-global-consistency">The benefits of global consistency <a href="#the-benefits-of-global-consistency" class="anchor">🔗</a></h1><p>While I advocate for autonomy, I&rsquo;m in no way opposed to some amount of global process. There are a lot of good things to
+be said for global consistency, and it would be difficult to operate a large engineering organization without a common
+baseline shared by all teams. Crucially though, rather than thinking about this commonality as ensuring that people work
+in the same way, I find it&rsquo;s more effective to think about it as providing constraints that people can work within.  The
+difficult part of this is finding the line between <em>enabling</em> constraints and <em>restrictive</em> constraints. The goal should
+be to provide simplicity by reducing cognitive load, usually by reducing the total number of decisions that have to be
+made.</p>
+<p>When considered through this lens, I like to think of global process as the constraints that define the bounds of
+autonomy for engineering teams.</p>
+<p>A few examples of what I would consider to be beneficial global consistency:</p>
+<ul>
+<li>All code should be stored in the same source control system (though not necessarily in the same repository!)</li>
+<li>All changes should follow some sort of pull request workflow; changes should not be made directly to main</li>
+<li>All teams should make a best effort to accurately represent their work with issues</li>
+</ul>
+<p>In most organizations, global constraints like this are likely to be uncontroversial and should help teams to
+answer basic questions without requiring much thought.</p>
+<p>There are other constraints that are more difficult to define. Should ideas like these be global constraints, or should
+they be left to local autonomy?</p>
+<ul>
+<li>All code changes require at least one non-author code review before being merged to main</li>
+<li>All repositories should have a minimum code coverage threshold of 40%</li>
+<li>Only the following programming languages may be used: (insert your favorite list here)</li>
+</ul>
+<p>I don&rsquo;t think there is a single correct answer. The situation is different for every company and the result is likely to
+depend upon things like company culture, executive values, and organization size. You can easily find many competing
+arguments about the relative merits of doing any of these (or all of them, or none of them), so it&rsquo;s really up to your
+leadership team to define how far global consistency should go. Just make sure that you do so consciously and for the
+right reasons.</p>
+<h1 id="the-sdlc-toolkit-a-practical-middle-ground">The SDLC toolkit: a practical middle-ground <a href="#the-sdlc-toolkit-a-practical-middle-ground" class="anchor">🔗</a></h1><p>I&rsquo;m advocating that teams should be allowed to operate autonomously within some high-level bounds of global consistency.
+One important question remains: how can something like this be achieved?</p>
+<p>One approach that I&rsquo;ve used personally to very good effect is something that I like to call the
+<a href="https://en.wikipedia.org/wiki/Systems_development_life_cycle" target="_blank" rel="noopener">SDLC</a> toolkit. The basic idea is simple: define the
+absolute minimum amount of global consistency that you need to effectively run the organization, then define a &ldquo;library&rdquo;
+of team-level processes that teams can pick and choose from. This library shouldn&rsquo;t be something static owned by a
+single individual, but instead a living repository of processes that different teams have found useful during their time
+within the organization.</p>
+<p>With such a library in place, teams are able to select processes that they believe might work well for them without
+having to go through a potentially large amount of research and discovery in order to construct their individualized
+process. If a team feels that something is missing from the library, they are free to do the work required to define the
+new process, provided that they contribute it back to the library once it&rsquo;s complete. Before long, the library will
+begin to stabilize, and teams will simply be picking and choosing processes that best suit their team members and the
+systems that they own.</p>
+<p>From an implementation perspective, there are many different routes that could be taken to accomplish this. Low tech
+approaches like a shared wiki or Google doc are likely to suffice for smaller organizations, while larger organizations
+may wish to provide automation using a tool like <a href="https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage" target="_blank" rel="noopener">GitLab Triage</a>.
+My organization values automation wherever possible, so we&rsquo;ve had good success with the latter, but different approaches
+are likely to work for different companies.</p>
+<p>Here are a few examples of what global policies and a policy library may look like. Each global policy also describes
+the motivation behind it; in order for a global policy to be considered an enabling constraint, it&rsquo;s necessary to be
+able to succinctly describe why it&rsquo;s important and why teams should care about it.</p>
+<h2 id="global-policies">Global policies <a href="#global-policies" class="anchor">🔗</a></h2><ul>
+<li>All issues must be labeled with their owning team
+<ul>
+<li>Issues must be owned by a single team who is accountable for the issue&rsquo;s final outcome. Teams will also always need
+a way to filter their issues from the rest of the company, so it makes sense to apply this concept globally</li>
+</ul>
+</li>
+<li>A closed Epic or Milestone should not contain open issues
+<ul>
+<li>This situation represents an obvious mistake in how work has been represented. The open issue(s) should either be
+closed or disassociated with the closed artifact</li>
+</ul>
+</li>
+<li>Merge requests open for more than a month without activity are automatically closed
+<ul>
+<li>The author may be  notified a week before the merge request is closed. A merge request open for this long without
+any activity is unlikely to be useful, and inactive merge requests should not be allowed to accumulate unbounded
+over time</li>
+</ul>
+</li>
+</ul>
+<p>The nice thing about policies like this is that it&rsquo;s easy to automate them across the entire organization. Even with
+high-level policies like this, it&rsquo;s important to consistently collect feedback from teams about what is and is not
+working so that global consistency can be improved alongside localized processes.</p>
+<h2 id="policy-library">Policy library <a href="#policy-library" class="anchor">🔗</a></h2><ul>
+<li>Issue weighting (story pointing): a team may decide that any issue that is brought into in-progress must have a
+weight associated with it</li>
+<li>Iteration cadences (sprints): a team may decide that any issue that is not in an explicit <code>backlog</code> state must have an
+iteration cadence associated with it</li>
+<li>Due dates: a team may decide that any issue that is brought into in-progress must have a due date set</li>
+<li>Custom labels: a team may decide that any issues associated with their <code>team::</code> label must also have a more specific
+set of scoped labels set</li>
+<li>Work-in-progress limits: a team may decide that they want to limit the total number of issues in progres, either on
+the team level or the individual level</li>
+</ul>
+<p>Really, each of these policies are little more than ways of plucking out pieces of <a href="https://en.wikipedia.org/wiki/Scrum_%28software_development%29" target="_blank" rel="noopener">Scrum</a>, <a href="https://en.wikipedia.org/wiki/Kanban_%28development%29" target="_blank" rel="noopener">Kanban</a>, <a href="https://en.wikipedia.org/wiki/Extreme_programming" target="_blank" rel="noopener">XP</a>, and other SDLC
+methodologies that you&rsquo;re probably already familiar with. Depending on how far you want to take the concept, you could
+decide to &ldquo;bundle&rdquo; policy libraries together so that teams can say things like &ldquo;we&rsquo;d like to use Scrum&rdquo; rather than
+having to select each policy individually.</p>
+<h2 id="challenges">Challenges <a href="#challenges" class="anchor">🔗</a></h2><p>The main challenge with the SDLC toolkit approach is ensuring that teams have the capabilities that they need to operate
+autonomously using localized processes like these. As I acknowledged previously, one of the benefits of global
+consistency is that is lowers cognitive load; requiring each team to have the expertise to run independently could be a
+significant barrier to some organizations.</p>
+<p>Personally, I believe that that the required effort is worth the payoff, but it&rsquo;s worth noting that an underperforming
+team is unlikely to have the skills and discipline required to succeed using the SDLC toolkit without proper coaching.</p>
+<h1 id="conclusion">Conclusion <a href="#conclusion" class="anchor">🔗</a></h1><p>Achieving the correct balance between global consistency and local autonomy is a difficult challenge for software
+engineering organizations. Striking the balance requires a thoughtful approach that, acknowledging that high performing
+teams thrive on autonomy. By embracing a flexible framework like the SDLC toolkit, organizations can foster a culture
+where teams have the freedom to choose processes that best suit their needs while simultaneously maintaining a
+consistent set of global constraints.</p>
+<p>The end goal is to empower teams to drive positive outcomes. Make sure that your global processes enhance your teams'
+effectiveness rather than getting in the way.</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/practices">practices</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/sdlc">sdlc</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>

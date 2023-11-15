@@ -6,7 +6,17 @@
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Minimize global process</title>
+      <link>https://jkaye2012.github.io/posts/minimize-global-process/</link>
+      <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://jkaye2012.github.io/posts/minimize-global-process/</guid>
+      <description>Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams  Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &amp;ldquo;reducing duplicate effort for developers&amp;rdquo;, to which another replied:
+ I have worked for a company that forced all engineers to use the same shitty CI/CD system.</description>
+    </item>
+    
     <item>
       <title>Software engineering is about thinking, not typing</title>
       <link>https://jkaye2012.github.io/posts/thinking-not-typing/</link>
