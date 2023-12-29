@@ -2,22 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://jkaye2012.github.io/posts/minimize-global-process/</loc>
-    <lastmod>2023-11-15T00:00:00+00:00</lastmod>
+    <loc>https://jkaye2012.github.io/posts/aoc-2023/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/aoc/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/</loc>
-    <lastmod>2023-11-15T00:00:00+00:00</lastmod>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/performance/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/posts/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/rust/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/</loc>
+    <lastmod>2023-12-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/posts/minimize-global-process/</loc>
     <lastmod>2023-11-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/practices/</loc>
     <lastmod>2023-11-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/sdlc/</loc>
-    <lastmod>2023-11-15T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jkaye2012.github.io/tags/</loc>
     <lastmod>2023-11-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/leadership/</loc>

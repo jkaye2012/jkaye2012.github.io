@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>A few fast solutions for Advent of Code 2023 | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="The Advent of Code is an annual programming competition with a lot of interesting puzzles. While the competition is mostly about answering the questions as quickly as possible, I instead prefer to challenge myself to come up with low-latency solutions for each problem. Now that the 2023 edition of AOC is wrapped up, I thought it would be interesting to go into a bit of detail about some of the faster and more unique solutions that I came up with.">
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">A few fast solutions for Advent of Code 2023</h1>
+
+  <div class="tip">
+    <time datetime="2023-12-29 00:00:00 &#43;0000 UTC">Dec 29, 2023</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      6533 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      31 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    <p>The <a href="https://adventofcode.com/" target="_blank" rel="noopener">Advent of Code</a> is an annual programming competition with a lot of interesting puzzles.
+While the competition is mostly about answering the questions as quickly as possible, I instead prefer to challenge myself
+to come up with low-latency solutions for each problem. Now that the 2023 edition of AOC is wrapped up, I thought it would
+be interesting to go into a bit of detail about some of the faster and more unique solutions that I came up with.</p>
+<p>This post will contain spoilers for both problems and solutions for AOC 2023. If you&rsquo;re thinking about solving these problems
+yourself at some point in the future, I&rsquo;d recommend closing this page and coming back after you&rsquo;re done. One of the most fun
+aspects of AOC is not knowing what&rsquo;s coming next.</p>
+<p>Originally, my goal for this post was to complete all 50 parts in under 100 milliseconds. The goal was in sight until
+<a href="https://adventofcode.com/2023/day/23" target="_blank" rel="noopener">day 23</a> threw an <a href="https://en.wikipedia.org/wiki/NP-hardness" target="_blank" rel="noopener">NP-hard</a> problem at us.
+While it&rsquo;s <a href="https://github.com/kcaffrey/aoc2023?tab=readme-ov-file#benchmarks" target="_blank" rel="noopener">certainly possible</a> to fully optimize solutions
+for all days and reach the sub-100ms mark, 25 days of puzzling has me tired enough that I&rsquo;d rather focus on more interesting
+solutions to some of the earlier problems. There was a <em>lot</em> of room for clever optimization in this year&rsquo;s round of puzzles,
+and I think there&rsquo;s a lot to be learned from looking at some of the more performant solutions.</p>
+<p>I&rsquo;m working on improving my Rust at the moment, so all solutions this year will be presented in Rust.</p>
+<p>First, a few disclaimers:</p>
+<ul>
+<li>None of these solutions have been micro-optimized; there is almost certainly a lot of potential performance left on the
+table as a result. There are certainly even faster solutions possible for each problem than I will present here</li>
+<li>One of the interesting parts of AOC is that your input is part of the problem statement. Solutions do not have to be
+correct for all possible inputs to be correct for AOC. This means that some of the solutions presented rely on properties
+of my input specifically and may not provide correct answers for arbitrary inputs!</li>
+<li>All benchmarks are run on a 2022 Framework laptop running Ubuntu with stock kernel/OS configuration</li>
+</ul>
+<p>This post ended up being <em>much</em> longer than I was originally intending. If you don&rsquo;t want to read the whole thing, <a href="#day-10httpsadventofcodecom2023day10">day 10</a>
+and <a href="#day-16httpsadventofcodecom2023day16">day 16</a> are probably the most interesting.</p>
+<p>With all of that out of the way, let&rsquo;s get into it!</p>
+<h1 id="a-note-on-ai-programming-assistants">A note on AI programming assistants <a href="#a-note-on-ai-programming-assistants" class="anchor">🔗</a></h1><p>The primary reason that I participate in AOC every year is to solve fun problems by exercising my engineering skills. Asking an AI
+assistant to solve problems for me doesn&rsquo;t help with that. As such, ChatGPT and friends were not used to write any of the code
+that I&rsquo;ll be writing about. That being said, I did allow myself two concessions:</p>
+<ul>
+<li><a href="https://github.com/features/copilot" target="_blank" rel="noopener">Copilot</a> is fair game as intelligent auto-complete. It&rsquo;s a tool I use in day-to-day programming,
+and I generally find it very useful. I don&rsquo;t see any reason to waste time manually typing in point translation code that Copilot can
+reliably auto-complete for me</li>
+<li>I allowed myself to use ChatGPT to discover new data structures/algorithms. This means that questions like &ldquo;What algorithms can be used
+to determine if a <a href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system" target="_blank" rel="noopener">Cartesian</a> point lies within a given polygon?&rdquo; are fair
+game, but entering the text of a problem or problem-specific details are not. This turned out to be a fantastic use of the tool, as it
+was able to provide me with Wikipedia links to algorithms 100% of the time that I decided to use it. This was <strong>much</strong> more useful than
+I&rsquo;ve found Googling to be for this type of query in the past</li>
+</ul>
+<h1 id="general-approach">General approach <a href="#general-approach" class="anchor">🔗</a></h1><p>My approach to achieve low-latency solutions for these types of problems relies mostly on mechanical sympathy:</p>
+<ul>
+<li>Exploit <a href="https://en.wikipedia.org/wiki/Locality_of_reference#Hierarchical_memory" target="_blank" rel="noopener">cache locality</a>; ideally, never leave L1 cache</li>
+<li>Minimize allocations; ideally, don&rsquo;t dynamically allocate at all</li>
+<li>Maximize pipeline throughput by avoiding <a href="https://en.wikipedia.org/wiki/Branch_predictor" target="_blank" rel="noopener">branches</a>; ideally, no branches at all</li>
+<li>Eliminate shared mutability to enable <a href="https://en.wikipedia.org/wiki/Parallel_computing" target="_blank" rel="noopener">parallelism</a></li>
+<li>Minimize the <a href="https://en.wikipedia.org/wiki/Time_complexity" target="_blank" rel="noopener">time complexity</a> of the algorithm</li>
+</ul>
+<p>Generally, I&rsquo;m looking to apply these concepts in order; that is, if I have to choose between making a dynamic allocation or
+exceeding L1 cache, I&rsquo;ll prefer to perform the allocation and stay within the L1 cache range. Importantly, this means that time
+complexity is the <em>last</em> consideration that I&rsquo;m making. This might seem strange, but the nature of modern processors is such that
+making proper use of the hardware is usually far more impactful to latency than the total number of operations performed.</p>
+<p>These concepts are too deep to explain properly in this post, but one canonical example that we&rsquo;ll see come about in a few of my
+solutions is use of a <code>Vec</code> where one might expect to see a <code>HashMap</code>. The amortized time complexity of <code>HashMap</code> operations is <code>O(1)</code>,
+while most of the corresponding <code>Vec</code> operations are <code>O(N)</code> or <code>O(log(N))</code> at best. Theoretically speaking, <code>HashMap</code> should be faster
+because it&rsquo;s performing many less operations. In reality, for small <code>N</code> (as is often the case in these problems), the locality properties
+of <code>Vec</code> dominate the number of operations. In conversation with others, it wasn&rsquo;t rare to see them achieve a 10-50% speed-up in their
+solution simply by swapping out their <code>HashMap</code>s.</p>
+<p>So, the goal is to solve the problems while taking maximal advantage of L1 cache, avoiding allocations, avoiding branches, avoiding
+shared mutability, then finally minimizing total number of operations.</p>
+<h1 id="criterion-reports">Criterion reports <a href="#criterion-reports" class="anchor">🔗</a></h1><p>Each solution includes a <a href="https://docs.rs/criterion/latest/criterion/" target="_blank" rel="noopener">Criterion</a> benchmark showing the total latency for parsing the
+problem input and solving both parts. The reports will look like this:</p>
+<p><a href="/images/aoc2023/all.png"><p class="markdown-image">
+  <img src="/images/aoc2023/all.png" alt=""  />
+</p></a></p>
+<p>The plot on the left displays the average time per iteration for this benchmark. The shaded region shows the estimated probability
+of an iteration taking a certain amount of time, while the line shows the mean.</p>
+<p>The plot on the right shows the linear regression calculated from the measurements. Each point represents a sample, though here it shows
+the total time for the sample rather than time per iteration. The line is the line of best fit for these measurements.</p>
+<p>Since the example here is the total latency of all solutions, there is a high variance in the measurements, resulting in a poor best fit line.
+The individual solutions are more deterministic as you will see later.</p>
+<h1 id="day-1httpsadventofcodecom2023day1"><a href="https://adventofcode.com/2023/day/1" target="_blank" rel="noopener">Day 1</a> <a href="#day-1httpsadventofcodecom2023day1" class="anchor">🔗</a></h1><p><strong>Total input size:</strong> ~22,000 characters <br>
+<strong>Median latency:</strong> 125μs</p>
+<p><a href="https://github.com/jkaye2012/aoc2023/blob/main/src/day1.rs" target="_blank" rel="noopener">Solution on GitHub</a></p>
+<p>The first problem of the year was to calculate the sum of the first and last digit on each line of input. Input for the problem looks
+like:</p>
+<pre tabindex="0"><code>1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet
+</code></pre><p>This can be achieved with no allocation or backtracking on a single pass through the input data, though a branch is required. The trick
+is to realize that there is only ever a single state to care about for each line: no digits have been seen, a single digit has been seen,
+or more than one digit has been seen. The state is updated as new digits are encountered, and when a newline is encountered, the total
+sum is updated using the final value that can be generated from the current state. Updating the sum also resets the state so that it&rsquo;s
+ready for re-use on the next line.</p>
+<p>Another potential approach is to scan once from the beginning of each line for the first digit, then once from the end for the second; however,
+this approach requires two passes through the input (the first to identify the line boundaries, and the second to run the actual
+scanning logic).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">enum</span> <span style="color:#a6e22e">State</span> {
+    Empty,
+    SingleDigit(<span style="color:#66d9ef">u32</span>),
+    DoubleDigit(<span style="color:#66d9ef">u32</span>, <span style="color:#66d9ef">u32</span>),
+}
+
+<span style="color:#66d9ef">impl</span> Default <span style="color:#66d9ef">for</span> State {
+    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">default</span>() -&gt; <span style="color:#a6e22e">Self</span> {
+        Self::Empty
+    }
+}
+
+<span style="color:#66d9ef">impl</span> State {
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">update</span>(self, val: <span style="color:#66d9ef">u32</span>) -&gt; <span style="color:#a6e22e">Self</span> {
+        <span style="color:#66d9ef">match</span> self {
+            Self::Empty <span style="color:#f92672">=&gt;</span> Self::SingleDigit(val),
+            Self::SingleDigit(a) <span style="color:#f92672">=&gt;</span> Self::DoubleDigit(a, val),
+            Self::DoubleDigit(a, _) <span style="color:#f92672">=&gt;</span> Self::DoubleDigit(a, val),
+        }
+    }
+
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">extract</span>(self) -&gt; <span style="color:#66d9ef">u32</span> {
+        <span style="color:#66d9ef">match</span> self {
+            Self::SingleDigit(a) <span style="color:#f92672">=&gt;</span> a <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> a,
+            Self::DoubleDigit(a, b) <span style="color:#f92672">=&gt;</span> a <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> b,
+            _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid input, attempted to extract from empty state&#34;</span>),
+        }
+    }
+}
+
+<span style="color:#75715e">#[aoc(day1, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">trebuchet_simple</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#66d9ef">u32</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#66d9ef">u32</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> state <span style="color:#f92672">=</span> State::default();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chars <span style="color:#f92672">=</span> input.chars();
+    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">let</span> Some(ch) <span style="color:#f92672">=</span> chars.next() {
+        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some(digit) <span style="color:#f92672">=</span> ch.to_digit(<span style="color:#ae81ff">10</span>) {
+            state <span style="color:#f92672">=</span> state.update(digit);
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;\n&#39;</span> {
+            result <span style="color:#f92672">+=</span> state.extract();
+            state <span style="color:#f92672">=</span> State::default();
+        }
+    }
+    result <span style="color:#f92672">+</span> state.extract()
+}
+</code></pre></div><p>Part 2 extends the problem so that not only digits have to be parsed, but English representations of each digit is fair game as well. The
+input now looks like:</p>
+<pre tabindex="0"><code>two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+</code></pre><p>With a minor amount of duplication, the solution is nearly the same. We&rsquo;re now forced to perform a look-ahead at each character to check
+if a word can be parsed. The index of the word in the <code>WORDS</code> array is re-used as its value for the resulting sum, meaning that no additional
+mapping or parsing is required.</p>
+<p>For this part, the &ldquo;per-line scan&rdquo; I mentioned previously seems to be faster than my approach due to the backtracking.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">const</span> WORDS: [<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">str</span>; <span style="color:#ae81ff">9</span>] <span style="color:#f92672">=</span> [
+    <span style="color:#e6db74">&#34;one&#34;</span>, <span style="color:#e6db74">&#34;two&#34;</span>, <span style="color:#e6db74">&#34;three&#34;</span>, <span style="color:#e6db74">&#34;four&#34;</span>, <span style="color:#e6db74">&#34;five&#34;</span>, <span style="color:#e6db74">&#34;six&#34;</span>, <span style="color:#e6db74">&#34;seven&#34;</span>, <span style="color:#e6db74">&#34;eight&#34;</span>, <span style="color:#e6db74">&#34;nine&#34;</span>,
+];
+
+<span style="color:#75715e">#[aoc(day1, part2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">trebuchet_wordy</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#66d9ef">u32</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#66d9ef">u32</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> state <span style="color:#f92672">=</span> State::default();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chars <span style="color:#f92672">=</span> input.chars();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ch: Option<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">char</span><span style="color:#f92672">&gt;</span>;
+    <span style="color:#66d9ef">while</span> {
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> digit <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+        <span style="color:#66d9ef">for</span> word <span style="color:#66d9ef">in</span> WORDS {
+            <span style="color:#66d9ef">if</span> chars.as_str().starts_with(word) {
+                state <span style="color:#f92672">=</span> state.update(digit);
+                <span style="color:#66d9ef">for</span> _ <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>word.len() <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span> {
+                    chars.next();
+                }
+                <span style="color:#66d9ef">break</span>;
+            }
+            digit <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
+        }
+        ch <span style="color:#f92672">=</span> chars.next();
+        ch.is_some()
+    } {
+        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some(digit) <span style="color:#f92672">=</span> ch.unwrap().to_digit(<span style="color:#ae81ff">10</span>) {
+            state <span style="color:#f92672">=</span> state.update(digit);
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ch.unwrap() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;\n&#39;</span> {
+            result <span style="color:#f92672">+=</span> state.extract();
+            state <span style="color:#f92672">=</span> State::default();
+        }
+    }
+    result <span style="color:#f92672">+</span> state.extract()
+}
+</code></pre></div><p>The results:</p>
+<p><a href="/images/aoc2023/day1.png"><p class="markdown-image">
+  <img src="/images/aoc2023/day1.png" alt=""  />
+</p></a></p>
+<p>We can see that even for a relatively simple problem like this one, trying to squeeze performance out of the solution requires thinking
+about the problem in a slightly different way than usual.</p>
+<h1 id="day-2httpsadventofcodecom2023day2"><a href="https://adventofcode.com/2023/day/2" target="_blank" rel="noopener">Day 2</a> <a href="#day-2httpsadventofcodecom2023day2" class="anchor">🔗</a></h1><p><strong>Total input size:</strong> 100 scenarios, ~10,500 characters <br>
+<strong>Median latency:</strong> 56μs</p>
+<p><a href="https://github.com/jkaye2012/aoc2023/blob/main/src/day2.rs" target="_blank" rel="noopener">Solution on GitHub</a></p>
+<p>The day 2 problem was to answer some questions about a set of games played with cubes. Cubes are removed from a bag a number of times;
+the input shows you the results of each removal separated by a <code>;</code>. Cubes are returned to the bag after being removed. The problem input looks like:</p>
+<pre tabindex="0"><code>Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+</code></pre><p>For part 1, we must determine which games would have been possible if the bag contained exactly 12 red cubes, 13 green cubes, and 14 blue cubes.</p>
+<p>Almost all of the time for this solution is spent parsing the input:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[derive(Default)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Round</span> {
+    red: <span style="color:#66d9ef">u32</span>,
+    green: <span style="color:#66d9ef">u32</span>,
+    blue: <span style="color:#66d9ef">u32</span>,
+}
+
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Game</span> {
+    rounds: Vec<span style="color:#f92672">&lt;</span>Round<span style="color:#f92672">&gt;</span>,
+}
+
+<span style="color:#75715e">#[aoc_generator(day2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">generate</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; Vec<span style="color:#f92672">&lt;</span>Game<span style="color:#f92672">&gt;</span> {
+    input
+        .lines()
+        .map(<span style="color:#f92672">|</span>line<span style="color:#f92672">|</span> Game {
+            rounds: <span style="color:#a6e22e">line</span>
+                .split(<span style="color:#e6db74">&#34;: &#34;</span>)
+                .skip(<span style="color:#ae81ff">1</span>)
+                .next()
+                .unwrap()
+                .split(<span style="color:#e6db74">&#34;; &#34;</span>)
+                .map(<span style="color:#f92672">|</span>round<span style="color:#f92672">|</span> {
+                    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> res <span style="color:#f92672">=</span> Round::default();
+                    <span style="color:#66d9ef">for</span> color <span style="color:#66d9ef">in</span> round.split(<span style="color:#e6db74">&#34;, &#34;</span>) {
+                        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> it <span style="color:#f92672">=</span> color.split(<span style="color:#e6db74">&#34; &#34;</span>);
+                        <span style="color:#66d9ef">let</span> num <span style="color:#f92672">=</span> <span style="color:#66d9ef">u32</span>::from_str_radix(it.next().unwrap(), <span style="color:#ae81ff">10</span>).unwrap();
+                        <span style="color:#66d9ef">match</span> it.next().unwrap() {
+                            <span style="color:#e6db74">&#34;red&#34;</span> <span style="color:#f92672">=&gt;</span> res.red <span style="color:#f92672">=</span> num,
+                            <span style="color:#e6db74">&#34;blue&#34;</span> <span style="color:#f92672">=&gt;</span> res.blue <span style="color:#f92672">=</span> num,
+                            <span style="color:#e6db74">&#34;green&#34;</span> <span style="color:#f92672">=&gt;</span> res.green <span style="color:#f92672">=</span> num,
+                            _ <span style="color:#f92672">=&gt;</span> panic!(),
+                        }
+                    }
+                    res
+                })
+                .collect(),
+        })
+        .collect()
+}
+</code></pre></div><p>We step through each line, parsing each <code>Round</code> into a <code>Game</code>. Rust&rsquo;s <code>Iterator</code> make this very simple. The solution to part 1 is also straightforward:
+a game is possible only if the <em>maximum</em> value seen for each color is exactly equal to the target values:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">impl</span> Game {
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">maxes</span>(<span style="color:#f92672">&amp;</span>self) -&gt; <span style="color:#a6e22e">Round</span> {
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> result <span style="color:#f92672">=</span> Round::default();
+        <span style="color:#66d9ef">for</span> round <span style="color:#66d9ef">in</span> <span style="color:#f92672">&amp;</span>self.rounds {
+            result.red <span style="color:#f92672">=</span> std::cmp::max(result.red, round.red);
+            result.green <span style="color:#f92672">=</span> std::cmp::max(result.green, round.green);
+            result.blue <span style="color:#f92672">=</span> std::cmp::max(result.blue, round.blue);
+        }
+        result
+    }
+}
+
+<span style="color:#75715e">#[aoc(day2, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">cube_game</span>(games: <span style="color:#66d9ef">&amp;</span>[Game]) -&gt; <span style="color:#66d9ef">u32</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> game_idx <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span> game <span style="color:#66d9ef">in</span> games {
+        <span style="color:#66d9ef">let</span> maxes <span style="color:#f92672">=</span> game.maxes();
+        <span style="color:#66d9ef">if</span> maxes.red <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">12</span> <span style="color:#f92672">&amp;&amp;</span> maxes.green <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">13</span> <span style="color:#f92672">&amp;&amp;</span> maxes.blue <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">14</span> {
+            result <span style="color:#f92672">+=</span> game_idx;
+        }
+        game_idx <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
+    }
+    result
+}
+</code></pre></div><p>For part 2, we must instead determine the minimum number of cubes of each color that could be present in each bag in order for the input game to
+be possible. Re-using the solution from part 1, this is trivial; the minimum value of each color that would make a game possible is the maximum
+value seen during any round, which we already have readily available:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[aoc(day2, part2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">cube_power</span>(games: <span style="color:#66d9ef">&amp;</span>[Game]) -&gt; <span style="color:#66d9ef">u32</span> {
+    games
+        .iter()
+        .map(<span style="color:#f92672">|</span>g<span style="color:#f92672">|</span> {
+            <span style="color:#66d9ef">let</span> maxes <span style="color:#f92672">=</span> g.maxes();
+            maxes.red <span style="color:#f92672">*</span> maxes.green <span style="color:#f92672">*</span> maxes.blue
+        })
+        .sum()
+}
+</code></pre></div><p>Unlike day 1, the time in day 2 was spent almost entirely in parsing. Running the actual solutions after parsing the <code>Game</code> structs took only
+421ns and 407ns respectively. Otherwise, there isn&rsquo;t too much to say about this one: represent the problem efficiently and you won&rsquo;t have much
+to worry about. The solution did require a single allocation, but only during input processing. The problem solutions themselves do not allocate
+and fit very easily into L1 cache as a result.</p>
+<p>Part 2 is also an interesting demonstration of a situation in which parallelization is not beneficial; the loop is so tight and predictable that
+making full use a single CPU core is <em>much</em> faster than trying to spread the work across cores. Parallelizing the loop (using <code>rayon</code>) takes the
+latency up to over 16 microseconds, nearly 50 times slower.</p>
+<p>The results:</p>
+<p><a href="/images/aoc2023/day2.png"><p class="markdown-image">
+  <img src="/images/aoc2023/day2.png" alt=""  />
+</p></a></p>
+<h1 id="day-6httpsadventofcodecom2023day6"><a href="https://adventofcode.com/2023/day/6" target="_blank" rel="noopener">Day 6</a> <a href="#day-6httpsadventofcodecom2023day6" class="anchor">🔗</a></h1><p><strong>Total input size:</strong> negligible <br>
+<strong>Median latency:</strong> 322ns</p>
+<p><a href="https://github.com/jkaye2012/aoc2023/blob/main/src/day6.rs" target="_blank" rel="noopener">Solution on GitHub</a></p>
+<p>Day 6 is where things start to get more interesting. The entire solution for both parts including parsing runs in under half of a microsecond!
+It&rsquo;s also the first solution where I use a different parsing strategy to solve the two parts of the problem. This is the point where some of the
+problem statements start to get a bit more complicated, so I&rsquo;ll do my best to summarize.</p>
+<p>The goal for Day 6 is to figure out the number of different ways to win a toy boat race given input that looks like this:</p>
+<pre tabindex="0"><code>Time:      7  15   30
+Distance:  9  40  200
+</code></pre><p>This input shows the results of three different races; one in which 7 meters was traveled in 9ms, one with 15m traveled in 40ms, and one with 30m
+traveled in 200ms. To participate in the race, you hold down a button which &ldquo;charges&rdquo; your boat. Each millisecond that you hold the button gives
+your boat 1m/ms in additional velocity, but while you&rsquo;re holding the button the race is still progressing. So, for the first race, there are 4
+different ways to win: hold the button for 2, 3, 4, or 5 milliseconds. In the first case, your boat moves at 2m/ms for 5ms, meaning it&rsquo;s gone 10m -
+greater than then 9m given in the input.</p>
+<p>Parsing for this input is the simplest we&rsquo;ve seen thus far:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TimeDistancePair</span> <span style="color:#f92672">=</span> (<span style="color:#66d9ef">i64</span>, <span style="color:#66d9ef">i64</span>);
+
+<span style="color:#75715e">#[aoc_generator(day6, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">generate</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; Vec<span style="color:#f92672">&lt;</span>TimeDistancePair<span style="color:#f92672">&gt;</span> {
+   <span style="color:#66d9ef">let</span> (tline, dline) <span style="color:#f92672">=</span> input.split_once(<span style="color:#e6db74">&#39;\n&#39;</span>).unwrap();
+   <span style="color:#66d9ef">let</span> times <span style="color:#f92672">=</span> tline
+       .split_whitespace()
+       .skip(<span style="color:#ae81ff">1</span>)
+       .map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">i64</span><span style="color:#f92672">&gt;</span>().unwrap());
+   <span style="color:#66d9ef">let</span> distances <span style="color:#f92672">=</span> dline
+       .split_whitespace()
+       .skip(<span style="color:#ae81ff">1</span>)
+       .map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">i64</span><span style="color:#f92672">&gt;</span>().unwrap());
+   times.zip(distances).collect()
+}
+</code></pre></div><p>Each race is represented by a <code>TimeDistancePair</code> that indicates the total amount of time we have and the minimum distance that must be traveled in
+order to win. Using this representation, counting the number of wins for each race can be found by realizing that the result is always symmetric
+about a center point; that is, if holding the button for <code>n</code> milliseconds results in a win, then holding the button for <code>total_time - n</code> milliseconds is
+guaranteed to also be a win. Similarly, if this relation does not hold, then it&rsquo;s guaranteed that neither <code>n</code> nor its &ldquo;complement&rdquo; result in a win.</p>
+<p>Armed with this understanding, we can essentially binary search against the target distance given the max time boundary. When the low end of the search
+crosses the high end, the number of possible wins can be calculated directly:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">ways_to_win</span>(time: <span style="color:#66d9ef">i64</span>, distance: <span style="color:#66d9ef">i64</span>) -&gt; <span style="color:#66d9ef">i64</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> lo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> hi <span style="color:#f92672">=</span> time <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> (time <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span>);
+    <span style="color:#66d9ef">while</span> lo <span style="color:#f92672">!=</span> hi <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
+        <span style="color:#66d9ef">let</span> next <span style="color:#f92672">=</span> (lo <span style="color:#f92672">+</span> hi) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>;
+        <span style="color:#66d9ef">if</span> next <span style="color:#f92672">*</span> (time <span style="color:#f92672">-</span> next) <span style="color:#f92672">&gt;</span> distance {
+            hi <span style="color:#f92672">=</span> next;
+        } <span style="color:#66d9ef">else</span> {
+            lo <span style="color:#f92672">=</span> next;
+        }
+    }
+    time <span style="color:#f92672">-</span> hi <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+}
+
+<span style="color:#75715e">#[aoc(day6, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">race</span>(input: <span style="color:#66d9ef">&amp;</span>[TimeDistancePair]) -&gt; <span style="color:#66d9ef">i64</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">for</span> (time, distance) <span style="color:#66d9ef">in</span> input {
+        result <span style="color:#f92672">*=</span> ways_to_win(<span style="color:#f92672">*</span>time, <span style="color:#f92672">*</span>distance);
+    }
+    result
+}
+</code></pre></div><p>I thought this was a very cool solution when I realized it would work. There&rsquo;s a simple elegance to applying a binary search to a discrete time space like this,
+and it&rsquo;s a small, easy to understand implementation to boot. There&rsquo;s another minor performance trick buried in the implementation on the second line: the
+starting &ldquo;high&rdquo; value for the search needs to differ depending upon whether the target time is even or odd. A bitwise <code>and</code> is the fastest way to extract
+this information, and makes it easy to express the starting value directly.</p>
+<p>Part 2 is a bit of a trick; the input now has to be reinterpreted. Rather than multiple smaller races, the input should be interpreted as one long race by
+ignoring all white space. This means the input above would now be interpreted as:</p>
+<pre tabindex="0"><code>Time:      71530
+Distance:  940200
+</code></pre><p>After re-parsing, the part 1 solution can be applied directly:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[aoc_generator(day6, part2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">generate_kerning</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#a6e22e">TimeDistancePair</span> {
+    <span style="color:#66d9ef">let</span> (tline, dline) <span style="color:#f92672">=</span> input.split_once(<span style="color:#e6db74">&#39;\n&#39;</span>).unwrap();
+    <span style="color:#66d9ef">let</span> time <span style="color:#f92672">=</span> tline
+        .chars()
+        .skip_while(<span style="color:#f92672">|</span>c<span style="color:#f92672">|</span> <span style="color:#f92672">*</span>c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>)
+        .filter(<span style="color:#f92672">|</span>c<span style="color:#f92672">|</span> <span style="color:#f92672">*</span>c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>)
+        .collect::<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span>()
+        .parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">i64</span><span style="color:#f92672">&gt;</span>()
+        .unwrap();
+    <span style="color:#66d9ef">let</span> distance <span style="color:#f92672">=</span> dline
+        .chars()
+        .skip_while(<span style="color:#f92672">|</span>c<span style="color:#f92672">|</span> <span style="color:#f92672">*</span>c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>)
+        .filter(<span style="color:#f92672">|</span>c<span style="color:#f92672">|</span> <span style="color:#f92672">*</span>c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39; &#39;</span>)
+        .collect::<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span>()
+        .parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">i64</span><span style="color:#f92672">&gt;</span>()
+        .unwrap();
+    (time, distance)
+}
+
+<span style="color:#75715e">#[aoc(day6, part2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">race_kerning</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">TimeDistancePair</span>) -&gt; <span style="color:#66d9ef">i64</span> {
+    ways_to_win(input.<span style="color:#ae81ff">0</span>, input.<span style="color:#ae81ff">1</span>)
+}
+</code></pre></div><p>This demonstrates another important idea behind generating performant solutions to these types of problems. Looking for relationships that can be exploited
+and fully understanding how the problem works can be more important than writing the code. <a href="/posts/thinking-not-typing.md">Thinking about the problem</a> means
+that less code can be written and that the solution is much faster than a direct implementation. Of course, this may not be an effective approach for landing
+on the leader board. That being said, implementation of a direct iterative solution may have taken a very long time to run for the second part given the
+significant increase in the problem size.</p>
+<p>It&rsquo;s worth noting that this problem can also be solved directly using the quadratic equation, but this isn&rsquo;t something that I realized when I was solving
+the problem myself. Interestingly, the direct mathematical solution isn&rsquo;t much faster than this one, though it does have a slight edge when implemented
+well.</p>
+<p>The results:</p>
+<p><a href="/images/aoc2023/day6.png"><p class="markdown-image">
+  <img src="/images/aoc2023/day6.png" alt=""  />
+</p></a></p>
+<h1 id="day-10httpsadventofcodecom2023day10"><a href="https://adventofcode.com/2023/day/10" target="_blank" rel="noopener">Day 10</a> <a href="#day-10httpsadventofcodecom2023day10" class="anchor">🔗</a></h1><p><strong>Total input size:</strong> 19,740 characters <br>
+<strong>Median latency:</strong> 213μs</p>
+<p><a href="https://github.com/jkaye2012/aoc2023/blob/main/src/day10.rs" target="_blank" rel="noopener">Solution on GitHub</a></p>
+<p>Day 10 was the first day that I had to start to look up algorithms that I wasn&rsquo;t previously familiar with. At least for me, this is a common theme of AOC
+solutions, and part of the reason that I like to solve these problems. There are so many specific algorithms that I&rsquo;ve never had the occasion to use
+professionally, and having an excuse to implement them really helps with understanding and retention. My goal isn&rsquo;t to be able to implement any of these
+algorithms by heart, but rather to know that they exist and what their applications are in the event that I come across a &ldquo;real world&rdquo; problem that could
+be solved by applying them.</p>
+<p>This day&rsquo;s problem consists of analysis of a system of pipes. Pipes are represented by characters that show connections between neighboring tiles in a grid,
+like so:</p>
+<pre tabindex="0"><code>.....
+.F-7.
+.|.|.
+.L-J.
+.....
+</code></pre><p><code>.</code> characters are &ldquo;open&rdquo; tiles, while others hold a specific type of pipe. The pipes that you&rsquo;re meant to analyze are guaranteed to be connected in a loop that
+does not branch (though the problem statement never guarantees this). The actual pipes to be traversed by the problem are much more complex. A slightly more
+realistic example looks like:</p>
+<pre tabindex="0"><code>7-F7-
+.FJ|7
+SJLL7
+|F--J
+LJ.LJ
+</code></pre><p>Notice that not all pipes are connected to the starting position (<code>S</code>)! The actual input to solve is much larger, a 140x140 grid of pipes.</p>
+<p>Day 10&rsquo;s solution in unique in that I solved both parts using a single pass through the input data, so I&rsquo;ll explain both parts of the problem before presenting
+any of the code for either solution.</p>
+<p>Part 1 asks a relatively straightforward question:</p>
+<blockquote>
+<p>How many steps along the loop does it take to get from the starting position to the point farthest from the starting position?</p>
+</blockquote>
+<p>Because it&rsquo;s guaranteed that the loop is connected and never branches, we&rsquo;ll be able to solve this by traversing the pipe and dividing the total path length
+by 2. Once again this is similar to the intuition used in day 6 to simplify the solution - there&rsquo;s no need for complicated calculations if we can rely on
+invariants set within the problem itself.</p>
+<p>Part 2, however, makes things much more complicated:</p>
+<blockquote>
+<p>How many tiles are enclosed by the loop?</p>
+</blockquote>
+<p>Much of the complexity of part 2 comes from the complex nature of the loop, and the fact that neighboring tiles may have no space between them at all. For
+example, in the following diagram, tiles marked <code>I</code> are enclosed by the loop, while those marked <code>O</code> are not enclosed because they have a &ldquo;path&rdquo; to the outside of
+the loop in between columns 4 and 5:</p>
+<pre tabindex="0"><code>..........
+.S------7.
+.|F----7|.
+.||OOOO||.
+.||OOOO||.
+.|L-7F-J|.
+.|II||II|.
+.L--JL--J.
+..........
+</code></pre><p>I spent longer than I would like to admit thinking about this problem before I decided to do some research, eventually learning about the
+<a href="https://en.wikipedia.org/wiki/Nonzero-rule" target="_blank" rel="noopener">nonzero-rule</a> linked from the <a href="https://en.wikipedia.org/wiki/Point_in_polygon" target="_blank" rel="noopener">point in polygon</a> article. This was one
+of the instances in which ChatGPT was massively helpful; I asked it the following question:</p>
+<blockquote>
+<p>What&rsquo;s an algorithm/formula that can be used to find the number of points included within a bounding curve?</p>
+</blockquote>
+<p>It recommended an algorithm called ray casting, including a link to the point in polygon Wikipedia page. Given my solution to part 1, it was then immediately obvious
+how the nonzero rule could be applied to solve the problem easily. This is also the first problem in which I relied upon a property of my specific input in my solution;
+my starting point was a <code>7</code>, so I assumed that <code>S</code> could be replaced by <code>7</code>, which is very likely not true in the general case.</p>
+<p>Let&rsquo;s take a look at the code, starting with the data structures that I used to represent the problem as this representation does most of the heavy lifting.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">use</span> <span style="color:#66d9ef">crate</span>::util::Res;
+
+<span style="color:#75715e">// Position update, new direction, winding designator
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Connection</span> <span style="color:#f92672">=</span> (<span style="color:#66d9ef">isize</span>, <span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">isize</span>);
+
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PipeMap</span> {
+    pipes: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">isize</span><span style="color:#f92672">&gt;</span>,
+    <span style="color:#75715e">// Up, right, down, left
+</span><span style="color:#75715e"></span>    connections: [[Connection; <span style="color:#ae81ff">7</span>]; <span style="color:#ae81ff">4</span>],
+    start: <span style="color:#66d9ef">isize</span>,
+}
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">char_to_pipe</span>(c: <span style="color:#66d9ef">char</span>) -&gt; <span style="color:#66d9ef">isize</span> {
+    <span style="color:#66d9ef">match</span> c {
+        <span style="color:#e6db74">&#39;.&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">0</span>,
+        <span style="color:#e6db74">&#39;-&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span>,
+        <span style="color:#e6db74">&#39;|&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">2</span>,
+        <span style="color:#e6db74">&#39;F&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">3</span>,
+        <span style="color:#e6db74">&#39;L&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">4</span>,
+        <span style="color:#e6db74">&#39;J&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">5</span>,
+        <span style="color:#e6db74">&#39;7&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">6</span>,
+        <span style="color:#e6db74">&#39;S&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">7</span>,
+        _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid pipe char&#34;</span>),
+    }
+}
+</code></pre></div><p>Both parts are represented as a single <code>PipeMap</code>. The grid is stored within a single contiguous <code>Vec</code>. Because of the way that pipe connections work, there&rsquo;s no need to
+store the actual pipes as a multidimensional grid; rather, the <code>connections</code> directly encode the relationship between the pipes. The <code>char_to_pipe</code> function gives
+a hint as to how this works: by keeping track of the direction in which the pipe is being traversed, the next position in the vector can be statically encoded by a
+<code>(direction, type)</code> tuple. This is also why the nonzero-rule is such a good fit to solve this problem: we already have access to the direction of movement and thus the
+winding direction at each corner.</p>
+<p>To clarify a bit further, consider again the simple example given originally (with the <code>7</code> in the top left replaced by the starting point):</p>
+<pre tabindex="0"><code>.....
+.F-S.
+.|.|.
+.L-J.
+.....
+</code></pre><p>We have 5 rows and 5 columns. The vector representing this map is just a flattened version of the grid:</p>
+<pre tabindex="0"><code>......F-S..|.|..L-J......
+</code></pre><p>The column length is the only thing that we need to traverse the flattened grid.</p>
+<p>The traversal will start moving to the right, which means we&rsquo;re using connection index <code>1</code>. The current pipe type is <code>7</code>, meaning we&rsquo;re using type index <code>6</code>. The update
+that we need to make is thus <code>connections[1][6]</code>. Moving to the right into the starting point, we must next move &ldquo;down&rdquo; one row, which is equivalent to incrementing the
+current position by the column length. You can verify this for yourself visually: the starting position is at index <code>8</code>, the column length is <code>5</code>, and the next position
+that we have to move to is at index <code>13</code>. To track the winding, each connection also contains a &ldquo;winding designator&rdquo; that can be used to incrementally track whether tiles
+are inside or outside of the contiguous pipe&rsquo;s bounding curve. For this step, the connection therefore is <code>(len, 2, -1)</code>. Our position needs to be updated by <code>len</code>, our
+direction needs to be changed to be moving down (index <code>2</code>), and the winding designator is <code>-1</code>.</p>
+<p>Bringing all of this together for the complete input, this is how the <code>PipeMap</code> is parsed:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[aoc_generator(day10)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">generate</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#a6e22e">PipeMap</span> {
+    <span style="color:#66d9ef">let</span> len: <span style="color:#66d9ef">isize</span> <span style="color:#f92672">=</span> input.find(<span style="color:#e6db74">&#39;\n&#39;</span>).unwrap().try_into().unwrap();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> start <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">let</span> pipes: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">isize</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">=</span> input
+        .chars()
+        .filter(<span style="color:#f92672">|</span>c<span style="color:#f92672">|</span> <span style="color:#f92672">*</span>c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\n&#39;</span>)
+        .enumerate()
+        .map(<span style="color:#f92672">|</span>(i, c)<span style="color:#f92672">|</span> {
+            <span style="color:#66d9ef">if</span> c <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;S&#39;</span> {
+                start <span style="color:#f92672">=</span> i;
+            }
+            char_to_pipe(c)
+        })
+        .collect();
+    <span style="color:#66d9ef">let</span> connections <span style="color:#f92672">=</span> [
+        [
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#f92672">-</span>len, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>),
+            (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>),
+        ],
+        [
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#f92672">-</span>len, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>),
+            (len, <span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+        ],
+        [
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (len, <span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>),
+            (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+        ],
+        [
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">2</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (len, <span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+            (<span style="color:#f92672">-</span>len, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+            (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>),
+        ],
+    ];
+    PipeMap {
+        pipes,
+        connections,
+        start: <span style="color:#a6e22e">start</span>.try_into().unwrap(),
+    }
+}
+</code></pre></div><p>The connections are essentially a &ldquo;rule table&rdquo; that is encoded using no allocation and a statically known size. The position updates need to be made
+in terms of the column length, so the array can&rsquo;t be <code>const</code>. If you examine the encoded connections, you should be able to discern the symmetry contained
+within; you can verify for yourself that each &ldquo;step&rdquo; will result in the correct update to the current position.</p>
+<p>Armed with the primed connection rules, the difficult part is already done. Solving both parts of the problem is now just a matter of applying the rules
+and interpreting the result:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[aoc(day10, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">furthest_pipe</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">PipeMap</span>) -&gt; <span style="color:#a6e22e">Res</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> count <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> curr_pos <span style="color:#f92672">=</span> input.start <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> curr_dir <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> winding <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; input.pipes.len()];
+    <span style="color:#66d9ef">while</span> curr_pos <span style="color:#f92672">!=</span> input.start {
+        <span style="color:#66d9ef">let</span> (pos, dir, wind) <span style="color:#f92672">=</span> input.connections[curr_dir][input.pipes[curr_pos <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+        winding[curr_pos <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#f92672">=</span> wind;
+        curr_pos <span style="color:#f92672">+=</span> pos;
+        curr_dir <span style="color:#f92672">=</span> dir;
+        count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
+    }
+
+    winding[curr_pos <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> enclosed <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> wound <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span> wind <span style="color:#66d9ef">in</span> winding {
+        <span style="color:#66d9ef">if</span> wind <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> {
+            <span style="color:#66d9ef">continue</span>;
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> wind <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+            <span style="color:#66d9ef">if</span> wound <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+                enclosed <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
+            }
+        } <span style="color:#66d9ef">else</span> {
+            wound <span style="color:#f92672">+=</span> wind;
+        }
+    }
+
+    Res(count <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>, enclosed)
+}
+</code></pre></div><p>The traversal of the pipe for part 1 (and to determine the correct winding designators) is completed with no branches other than the <code>while</code> to detect when
+traversal is complete. Everything operates on contiguous memory that fits comfortably within L1 cache and is not subject to branch misprediction. After the
+traversal is complete, a second pass through the winding designators is necessary to calculate the number of tiles enclosed within the pipe. There&rsquo;s a decent
+amount of branching here, but application of the nonzero-rule requires this.</p>
+<p>Traversing the pipe without any conditional logic is the key to the good performance of this solution. Application of a purpose-built algorithm (the nonzero-rule)
+greatly simplifies what would otherwise be very complex (and slow) logic to attempt to traverse the entire graph to determine the enclosed tiles.</p>
+<p>The results:</p>
+<p><a href="/images/aoc2023/day10.png"><p class="markdown-image">
+  <img src="/images/aoc2023/day10.png" alt=""  />
+</p></a></p>
+<h1 id="day-16httpsadventofcodecom2023day16"><a href="https://adventofcode.com/2023/day/16" target="_blank" rel="noopener">Day 16</a> <a href="#day-16httpsadventofcodecom2023day16" class="anchor">🔗</a></h1><p><strong>Total input size:</strong> 12,200 characters <br>
+<strong>Median latency:</strong> 1.22ms</p>
+<p><a href="https://github.com/jkaye2012/aoc2023/blob/main/src/day16.rs" target="_blank" rel="noopener">Solution on GitHub</a></p>
+<p>Day 16 is the final solution I&rsquo;m going to present. Despite being the slowest solution presented by almost an order of magnitude, this was my favorite problem
+of the year and the one that I&rsquo;m happiest with my solution to. As usual, problems get more complicated the further into AOC we go, so I&rsquo;ll do my best to explain
+the problem succinctly.</p>
+<p>We&rsquo;re concerned with a grid of mirrors and splitters, like so:</p>
+<pre tabindex="0"><code>.|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|....
+</code></pre><p>Light will enter the grid at <code>(0, 0)</code> traveling to the right. If it hits a splitter (<code>|</code> or <code>-</code>) perpendicularly, light is emitted out of both ends of the splitter.
+If it hits a mirror (<code>/</code> or <code>\</code>), it will be reflected 90 degrees depending upon the mirror&rsquo;s orientation and the direction that the light was originally traveling.
+For example, light traveling to the right that hits a <code>/</code> mirror will be reflected 90 degrees so that it&rsquo;s now traveling upwards. Hitting a <code>\</code> mirror would instead
+reflect downwards. Hitting an empty space (<code>.</code>) or a splitter from a parallel direction does nothing; the light continues to travel in a straight line. The light
+doesn&rsquo;t interact with itself, so beams can freely pass through one another. When light encounters the boundary of the grid, it stops and is no longer propagated.</p>
+<p>Part 1 requires finding the number of tiles that light passes through. For the example given above, the path of the light looks like:</p>
+<pre tabindex="0"><code>&gt;|&lt;&lt;&lt;\....
+|v-.\^....
+.v...|-&gt;&gt;&gt;
+.v...v^.|.
+.v...v^...
+.v...v^..\
+.v../2\\..
+&lt;-&gt;-/vv|..
+.|&lt;&lt;&lt;2-|.\
+.v//.|.v..
+</code></pre><p>This means that the following 46 tiles have light pass through them:</p>
+<pre tabindex="0"><code>######....
+.#...#....
+.#...#####
+.#...##...
+.#...##...
+.#...##...
+.#..####..
+########..
+.#######..
+.#...#.#..
+</code></pre><p>Similar to day 10, let&rsquo;s begin with an examination of the data structure used to represent the problem:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[derive(Clone)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Traversal</span> {
+    layout: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;</span>,
+    rows: <span style="color:#66d9ef">usize</span>,
+    cols: <span style="color:#66d9ef">usize</span>,
+}
+</code></pre></div><p>This is it - that&rsquo;s enough to hold <strong>all</strong> of the state required to solve part 1! Once again, a realization of properties of the problem input
+gives the insight required to understand the trick. The problem is asking to track only whether each tile was hit by light or not. This can be determined by
+encoding the 5 different tile types (3 bits) and the 4 possible traversal directions as a bitmask (4 bits). 3 bits for the types
+and 4 for the directions is 7 total bits, so we can pack everything that we need into a single <code>u8</code> for each tile by making use of
+<a href="https://en.wikipedia.org/wiki/Mask_%28computing%29" target="_blank" rel="noopener">masks</a>. As with the previous solution, we&rsquo;re using the &ldquo;trick&rdquo; of storing the grid as a contiguous vector
+rather than a multidimensional structure. If <em>any</em> of the directional traversal bits are set, we know that the tile has been lit, so that information doesn&rsquo;t
+need to be stored explicitly.</p>
+<p>The <code>rows</code> and <code>cols</code> are needed to detect and handle the boundary conditions, but 128 bits is a small price to pay for the compact tile representation
+that this provides.</p>
+<p>To understand why such a compact representation like this is so important, you need at least a basic understanding of
+<a href="https://en.wikipedia.org/wiki/Data_structure_alignment" target="_blank" rel="noopener">alignment</a> and the <a href="https://en.wikipedia.org/wiki/Central_processing_unit#Cache" target="_blank" rel="noopener">hardware cache</a>.
+A much more thorough discussion of these topics can be found in <a href="https://www.akkadia.org/drepper/cpumemory.pdf" target="_blank" rel="noopener">Drepper&rsquo;s paper on CPU memory</a> (PDF link). On most processors,
+a total of 64Kb of memory is available to the L1 cache. Once that amount of memory is exceeded, we&rsquo;re forced to fall back to L2 cache, resulting in a significant
+slowdown. With 12,200 tiles to manage, we either have a maximum of 5 bytes per tile to store, or we need to use a sparse representation of the grid in order to stay
+within L1 cache. Because of how padding and alignment works, even storing a single <code>u32</code> and a <code>bool</code> would use 8 bytes per tile, taking us out of L1 cache range. So,
+while there&rsquo;s a bit of breathing room, representing the entire grid using only a byte per tile more or less guarantees that we will not exceed L1 cache.</p>
+<p>First, the parser and the bitmasks that we&rsquo;ll need:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">const</span> UP: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#66d9ef">const</span> RIGHT: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+<span style="color:#66d9ef">const</span> DOWN: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+<span style="color:#66d9ef">const</span> LEFT: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>;
+
+<span style="color:#66d9ef">const</span> SPLITTER_HORIZ: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+<span style="color:#66d9ef">const</span> SPLITTER_VERT: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#66d9ef">const</span> MIRROR_FWD: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+<span style="color:#66d9ef">const</span> MIRROR_BWD: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+<span style="color:#66d9ef">const</span> OPEN: <span style="color:#66d9ef">u8</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+
+<span style="color:#75715e">#[aoc_generator(day16)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">generate</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; <span style="color:#a6e22e">Traversal</span> {
+    <span style="color:#66d9ef">let</span> cols <span style="color:#f92672">=</span> input.find(<span style="color:#e6db74">&#39;\n&#39;</span>).unwrap();
+    <span style="color:#66d9ef">let</span> rows <span style="color:#f92672">=</span> input.len() <span style="color:#f92672">/</span> cols;
+    <span style="color:#66d9ef">let</span> layout <span style="color:#f92672">=</span> input
+        .as_bytes()
+        .iter()
+        .filter(<span style="color:#f92672">|</span>b<span style="color:#f92672">|</span> <span style="color:#f92672">**</span>b <span style="color:#f92672">!=</span> <span style="color:#e6db74">b&#39;\n&#39;</span>)
+        .map(<span style="color:#f92672">|</span>b<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> <span style="color:#f92672">*</span>b {
+            <span style="color:#e6db74">b&#39;-&#39;</span> <span style="color:#f92672">=&gt;</span> SPLITTER_HORIZ,
+            <span style="color:#e6db74">b&#39;|&#39;</span> <span style="color:#f92672">=&gt;</span> SPLITTER_VERT,
+            <span style="color:#e6db74">b&#39;/&#39;</span> <span style="color:#f92672">=&gt;</span> MIRROR_FWD,
+            <span style="color:#e6db74">b&#39;\\&#39;</span> <span style="color:#f92672">=&gt;</span> MIRROR_BWD,
+            <span style="color:#e6db74">b&#39;.&#39;</span> <span style="color:#f92672">=&gt;</span> OPEN,
+            _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid elem&#34;</span>),
+        })
+        .collect();
+
+    Traversal { layout, rows, cols }
+}
+</code></pre></div><p>Because the visitation status all start as false (represented by <code>0</code> bits), the only processing that we need is to ensure that each tile type is represented
+properly. The bottom 4 bits are used are used for the type, so they can be parsed as simple <code>u8</code> values.</p>
+<p>The compact byte representation is then paired with a <a href="https://en.wikipedia.org/wiki/Recursion" target="_blank" rel="noopener">recursive</a>
+<a href="https://en.wikipedia.org/wiki/Dynamic_programming" target="_blank" rel="noopener">dynamic programming</a> approach. To track all of the light that traverses the mirrors, we follow these basic steps:</p>
+<ol>
+<li>Start tracking the number of lit tiles at 0</li>
+<li>Extract all relevant information from the packed byte: the tile type and whether the tile has been visited from each direction</li>
+<li>If the tile has been visited from the current traversal direction, return the number of lit tiles tracked thus far</li>
+<li>Otherwise, if this is the first time the tile is being visited, increment the number of lit tiles</li>
+<li>Set the bit denoting that the tile has been visited from the current direction</li>
+<li>Use the tile type and the current direction to determine the subsequent location(s) and direction(s) (there can be multiple because of splitters)</li>
+<li>Recurse on each subsequent traversal</li>
+</ol>
+<p>Given this, the part 1 solution:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">impl</span> Traversal {
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">energized</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self) -&gt; <span style="color:#66d9ef">usize</span> {
+        self.traverse(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, RIGHT)
+    }
+
+    <span style="color:#75715e">#[inline(always)]</span>
+    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">idx</span>(<span style="color:#f92672">&amp;</span>self, row: <span style="color:#66d9ef">usize</span>, col: <span style="color:#66d9ef">usize</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+        row <span style="color:#f92672">*</span> self.cols <span style="color:#f92672">+</span> col
+    }
+
+    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">step</span>(<span style="color:#f92672">&amp;</span>self, row: <span style="color:#66d9ef">usize</span>, col: <span style="color:#66d9ef">usize</span>, dir: <span style="color:#66d9ef">u8</span>) -&gt; Option<span style="color:#f92672">&lt;</span>(<span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">usize</span>)<span style="color:#f92672">&gt;</span> {
+        <span style="color:#66d9ef">match</span> dir {
+            UP <span style="color:#66d9ef">if</span> row <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=&gt;</span> None,
+            UP <span style="color:#f92672">=&gt;</span> Some((row <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, col)),
+            RIGHT <span style="color:#66d9ef">if</span> col <span style="color:#f92672">==</span> self.cols <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> None,
+            RIGHT <span style="color:#f92672">=&gt;</span> Some((row, col <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)),
+            DOWN <span style="color:#66d9ef">if</span> row <span style="color:#f92672">==</span> self.rows <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">=&gt;</span> None,
+            DOWN <span style="color:#f92672">=&gt;</span> Some((row <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, col)),
+            LEFT <span style="color:#66d9ef">if</span> col <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">=&gt;</span> None,
+            LEFT <span style="color:#f92672">=&gt;</span> Some((row, col <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)),
+            _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid direction&#34;</span>),
+        }
+    }
+
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">traverse</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, <span style="color:#66d9ef">mut</span> row: <span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">mut</span> col: <span style="color:#66d9ef">usize</span>, <span style="color:#66d9ef">mut</span> dir: <span style="color:#66d9ef">u8</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> energized <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+        <span style="color:#66d9ef">loop</span> {
+            <span style="color:#66d9ef">let</span> idx <span style="color:#f92672">=</span> self.idx(row, col);
+            <span style="color:#66d9ef">let</span> curr <span style="color:#f92672">=</span> self.layout[idx] <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xF</span>;
+            <span style="color:#66d9ef">let</span> visited <span style="color:#f92672">=</span> self.layout[idx] <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">4</span>;
+            <span style="color:#66d9ef">if</span> dir <span style="color:#f92672">&amp;</span> visited <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+                <span style="color:#66d9ef">break</span>;
+            }
+            <span style="color:#66d9ef">if</span> visited <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+                energized <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>;
+            }
+            self.layout[idx] <span style="color:#f92672">|=</span> dir <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4</span>;
+            <span style="color:#66d9ef">match</span> curr {
+                SPLITTER_HORIZ <span style="color:#f92672">=&gt;</span> {
+                    <span style="color:#66d9ef">if</span> dir <span style="color:#f92672">==</span> UP <span style="color:#f92672">||</span> dir <span style="color:#f92672">==</span> DOWN {
+                        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some((r, c)) <span style="color:#f92672">=</span> self.step(row, col, LEFT) {
+                            energized <span style="color:#f92672">+=</span> self.traverse(r, c, LEFT);
+                        }
+                        dir <span style="color:#f92672">=</span> RIGHT;
+                    }
+                }
+                SPLITTER_VERT <span style="color:#f92672">=&gt;</span> {
+                    <span style="color:#66d9ef">if</span> dir <span style="color:#f92672">==</span> LEFT <span style="color:#f92672">||</span> dir <span style="color:#f92672">==</span> RIGHT {
+                        <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some((r, c)) <span style="color:#f92672">=</span> self.step(row, col, UP) {
+                            energized <span style="color:#f92672">+=</span> self.traverse(r, c, UP);
+                        }
+                        dir <span style="color:#f92672">=</span> DOWN;
+                    }
+                }
+                MIRROR_FWD <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> dir {
+                    UP <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> RIGHT,
+                    RIGHT <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> UP,
+                    DOWN <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> LEFT,
+                    LEFT <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> DOWN,
+                    _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid dir&#34;</span>),
+                },
+                MIRROR_BWD <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> dir {
+                    UP <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> LEFT,
+                    RIGHT <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> DOWN,
+                    DOWN <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> RIGHT,
+                    LEFT <span style="color:#f92672">=&gt;</span> dir <span style="color:#f92672">=</span> UP,
+                    _ <span style="color:#f92672">=&gt;</span> panic!(<span style="color:#e6db74">&#34;Invalid dir&#34;</span>),
+                },
+                _ <span style="color:#f92672">=&gt;</span> {}
+            }
+            <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some((r, c)) <span style="color:#f92672">=</span> self.step(row, col, dir) {
+                row <span style="color:#f92672">=</span> r;
+                col <span style="color:#f92672">=</span> c;
+            } <span style="color:#66d9ef">else</span> {
+                <span style="color:#66d9ef">break</span>;
+            }
+        }
+        energized
+    }
+}
+
+<span style="color:#75715e">#[aoc(day16, part1)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mirror_energy</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">Traversal</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+    input.clone().energized()
+}
+</code></pre></div><p>The bit twiddling is not too complicated. The bottom 4 bits store the type, while the top 4 store the directional visitation status. The relevant operations
+can be found in the first ~10 lines of the <code>traverse</code> function:</p>
+<ul>
+<li><code>self.layout[idx] &amp; 0xF</code>: extract the type from the current position by masking it with <code>1111</code></li>
+<li><code>self.layout[idx] &gt;&gt; 4</code>: extract the visitation status from the current position by shifting the top 4 bits into the bottom 4 bits</li>
+<li><code>dir &amp; visited != 0</code>: because <code>dir</code> is a mask, this tells us whether the visitation status is set for the current direction</li>
+<li><code>self.layout[idx] |= dir &lt;&lt; 4</code>: set the visitation status to true for the current direction. The mask is left shifted 4 bits before being applied so that it applies
+to the top bits only</li>
+</ul>
+<p>The rest of the implementation simply follows the steps given above.</p>
+<p>Part 2 extends the problem to ask: instead of starting at <code>(0, 0)</code> and moving to the right, if the light could instead start in <em>any</em> border tile,
+what&rsquo;s the maximum possible number of tiles that will be lit? Light entering from corner tiles can start in either direction and these two possibilities
+should be treated independently.</p>
+<p>Because of the speed of the part 1 solution, a simple brute force approach solves part 2 trivially:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">use</span> rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
+
+<span style="color:#75715e">#[aoc(day16, part2)]</span>
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">max_mirror_energy</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">Traversal</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> traversals <span style="color:#f92672">=</span> Vec::with_capacity(<span style="color:#ae81ff">500</span>);
+    <span style="color:#66d9ef">for</span> r <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>input.rows {
+        traversals.push((r, <span style="color:#ae81ff">0</span>, RIGHT));
+        traversals.push((r, input.cols <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, LEFT));
+    }
+    <span style="color:#66d9ef">for</span> c <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>input.cols {
+        traversals.push((<span style="color:#ae81ff">0</span>, c, DOWN));
+        traversals.push((input.rows <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>, c, UP));
+    }
+    traversals
+        .par_iter()
+        .map(<span style="color:#f92672">|</span>(r, c, d)<span style="color:#f92672">|</span> input.clone().traverse(<span style="color:#f92672">*</span>r, <span style="color:#f92672">*</span>c, <span style="color:#f92672">*</span>d))
+        .max()
+        .unwrap()
+}
+</code></pre></div><p><a href="https://docs.rs/rayon/latest/rayon/" target="_blank" rel="noopener">Rayon</a> allows for naive parallelization of the problem through the use of a parallel iterator (<code>par_iter</code>). While it
+is possible to answer the question without traversing <em>every</em> possibility (because light leaving through a tile is guaranteed to light the same number of
+tiles as light entering from that tile), reducing the search space in this way requires waiting on previous iterations to complete, which slows down the
+overall solution despite theoretically doing less work.</p>
+<p>The results:</p>
+<p><a href="/images/aoc2023/day16.png"><p class="markdown-image">
+  <img src="/images/aoc2023/day16.png" alt=""  />
+</p></a></p>
+<h1 id="wrapping-up">Wrapping up <a href="#wrapping-up" class="anchor">🔗</a></h1><p>I had a lot of fun with AOC again this year. Hopefully these solutions gave you some insight into a few strategies that you can use to generate
+these types of low-latency solutions. All of my solutions are available in the <a href="https://github.com/jkaye2012/aoc2023/tree/main" target="_blank" rel="noopener">GitHub repository</a>;
+if you&rsquo;d like an explanation for one of the days that I haven&rsquo;t highlighted in this post, please
+<a href="https://github.com/jkaye2012/aoc2023/issues/new" target="_blank" rel="noopener">drop me an issue</a> and I&rsquo;ll be happy to add it.</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/aoc">aoc</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/performance">performance</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/rust">rust</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>
