@@ -6,15 +6,22 @@
     <description>Recent content in reflection on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/tags/reflection/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 06 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jkaye2012.github.io/tags/reflection/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Enabling constraints</title>
+      <link>https://jkaye2012.github.io/posts/enabling-constraints/</link>
+      <pubDate>Wed, 06 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/enabling-constraints/</guid>
+      <description>Constraints don&#39;t always have to make things more difficult. What comes to mind when you hear the word constraint?
+Often, thoughts will immediately jump to the negative: a constraint as a barrier that makes it more difficult to accomplish a goal. This additional difficulty can end up being a significant source of complexity when trying to solve problems, sometimes to the point that avoiding constraints becomes a goal of its own.</description>
+    </item>
     <item>
       <title>Flexible systems</title>
       <link>https://jkaye2012.github.io/posts/flexible-systems/</link>
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/flexible-systems/</guid>
-      <description>Most decisions that you make are not nearly as important as your ability to change them in the future.  When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. Technical systems may raise concerns about choosing the appropriate logging framework or determining the most effective concurrency model. Human systems may instead be concerned with how many meetings to hold, with whom, and how often.</description>
+      <description>Most decisions that you make are not nearly as important as your ability to change them in the future. When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. Technical systems may raise concerns about choosing the appropriate logging framework or determining the most effective concurrency model. Human systems may instead be concerned with how many meetings to hold, with whom, and how often.</description>
     </item>
-    
   </channel>
 </rss>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Enabling constraints | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Constraints don&#39;t always have to make things more difficult. What comes to mind when you hear the word constraint?
+Often, thoughts will immediately jump to the negative: a constraint as a barrier that makes it more difficult to accomplish a goal. This additional difficulty can end up being a significant source of complexity when trying to solve problems, sometimes to the point that avoiding constraints becomes a goal of its own.">
+<meta name="generator" content="Hugo 0.120.3">
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">Enabling constraints</h1>
+
+  <div class="tip">
+    <time datetime="2024-03-06 00:00:00 &#43;0000 UTC">Mar 6, 2024</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      1000 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      5 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+Constraints don't always have to make things more difficult.
+
+    </p>
+</figure>
+<hr />
+
+<p>What comes to mind when you hear the word <em>constraint</em>?</p>
+<p>Often, thoughts will immediately jump to the negative: a constraint as a barrier that makes it more difficult to
+accomplish a goal. This additional difficulty can end up being a <a href="https://www.hillelwayne.com/post/complexity-constraints/" target="_blank" rel="noopener">significant source of
+complexity</a> when trying to solve problems, sometimes to the
+point that avoiding constraints becomes a goal of its own. Constraints with this type of negative impact can be called
+<em>restrictive</em>. Teams subject to too many restrictive constraints will eventually slow to a crawl as they attempt to
+solve problems within such strict boundaries.</p>
+<p>There is, however, another lens through which constraints can be viewed wherein they simplify a problem rather than
+complicating it. A constraint can remove possibilities from the problem space, leaving fewer edge cases to handle and
+less to think about overall. Constraints with this type of positive impact can instead be called <em>enabling</em>. Teams that
+can identify enabling constraints will find their work simplified as they are freed from edge cases and consideration of
+unknown unknowns.</p>
+<p>When <a href="/posts/flexible-systems/">designing systems</a>, it&rsquo;s therefore important to understand the difference between
+restrictive and enabling constraints. The former should generally be minimized to whatever extent is reasonable, while
+the latter should be embraced when they can be identified. As the number of restrictive constraints grows, a team is
+usually well-served to search more proactively for corresponding enabling constraints. The simplicity provided by
+enabling constraints can be used as a tool to offset the complexity introduced by the restrictions.</p>
+<p>One way to think about constraints that restrict relative to those that enable is by examining the source of the
+constraint. If the source of the constraint is external, it will often be restrictive; these constraints are usually
+imposed upon a system from the outside. Enabling constraints, on the other hand, are intentionally selected; they&rsquo;re
+brought into a system for the simplicity benefits that they bring to the overall design. Restrictive constraints are not
+within our control, so other ways need to be found to offset the complexity that they introduce. Note that by
+&ldquo;external&rdquo;, I mean external to the team responsible for solving a problem, not necessarily external to an
+organization. Understanding the impacts of these types of constraints and effectively communicating those impacts to
+less technical individuals (stakeholders in particular) is a primary tool that effective technical leaders can use to
+help reduce the burden on their teams.</p>
+<p>Another more detailed parallel can be drawn between constraints and complexity, specifically the concept of <a href="https://medium.com/background-thread/accidental-and-essential-complexity-programming-word-of-the-day-b4db4d2600d4" target="_blank" rel="noopener">essential
+and accidental
+complexity</a>. Enabling
+constraints remove essential complexity from a problem by obviating the need to handle a subset of the more generic
+problem statement. Ideally, they&rsquo;re also selected so that they make accidental complexity less likely, or at least less
+impactful.</p>
+<p>Finally, the fantastic book <a href="https://davidmarquet.com/leadership-is-language-book/" target="_blank" rel="noopener">Leadership is Language</a> provides yet
+another way to think about these ideas via Marquet&rsquo;s concepts of Redwork and Bluework. Redwork is reactive, mechanical,
+and routine. It&rsquo;s the day-to-day operations that we carry out to get our jobs done. Bluework, on the other hand, is
+exploratory, flexible, and varied. It&rsquo;s the higher-level cognitive tasks that we focus on to improve the way that we
+work. Bluework benefits from increasing variability of thought and possibility, while Redwork benefits from increasing
+certainty and reducing decision making. Through this lens, we can think of a subset of Bluework as identifying enabling
+constraints. Finding such constraints is often not <a href="/posts/simplicity-isnt-easy">easy</a>, but once identified they have
+the potential to greatly aid our Redwork by reducing the uncertainty to be considered when carrying out tasks.</p>
+<p>Interestingly, it&rsquo;s possible for the same constraint to change from enabling to restrictive through the course of
+time. Consider the concept of <a href="https://en.wikipedia.org/wiki/Service-level_agreement" target="_blank" rel="noopener">service level
+agreements</a>. Generally, the provider of a service will define the
+service level that they can reasonably support. This advertised service level becomes a constraint: changes to the
+system that would cause it to violate the service level cannot be enacted. On the other hand, the inverse is also true:
+a design that would significantly simplify the system that doesnt&rsquo;t cause it to violate the service level can be chosen.</p>
+<p>This type of decision can have large ramifications to the design and architecture of the system in question: whether
+updates need to be immediately or eventually consistent, what types of standbys and fail-overs are necessary, and what
+types of deployments can be supported, just to name a few. When a system is first created, defining the service level up
+front can act as an enabling constraint; if it&rsquo;s determined that a system need only support 100000
+<a href="https://en.wikipedia.org/wiki/Queries_per_second" target="_blank" rel="noopener">QPS</a>, the design considerations and complexity that must be taken
+into account are far simpler than those for a system that must support one hundred million or more.</p>
+<p>As time passes, however, the system will continue to evolve, and could potentially reach a point where being forced to
+maintain even the 100000 QPS level becomes restrictive given new required functionality. When originally selected, the
+constraint enabled a simpler design, but as the number of users and desired functionality grows, the constraint becomes
+externally-enforced, making it restrictive. Understanding how constraints are likely to impact a system as it changes
+over time can help to decide which constraints should be designed against as a core property of the system and which
+should be treated only as ancillary considerations.</p>
+<p>Ultimately, managing complexity is one of the most important parts of software engineering, and thinking about
+constraints is only one tool among many that we have to help us think about the systems that we&rsquo;re responsible for. We
+should search for enabling constraints that allow us to simplify the designs and implementations of our systems. We must
+also recognize that a constraint that enables when a system is first designed can eventually become a restriction with
+significant negative impact if proper care isn&rsquo;t exercised.</p>
+<p>It&rsquo;s almost alaways a good idea to pay attention to that constraints that you&rsquo;re working against and how they influence
+your decision making.</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/reflection">reflection</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>

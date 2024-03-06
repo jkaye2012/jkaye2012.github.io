@@ -6,112 +6,99 @@
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 29 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 06 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Enabling constraints</title>
+      <link>https://jkaye2012.github.io/posts/enabling-constraints/</link>
+      <pubDate>Wed, 06 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/enabling-constraints/</guid>
+      <description>Constraints don&#39;t always have to make things more difficult. What comes to mind when you hear the word constraint?
+Often, thoughts will immediately jump to the negative: a constraint as a barrier that makes it more difficult to accomplish a goal. This additional difficulty can end up being a significant source of complexity when trying to solve problems, sometimes to the point that avoiding constraints becomes a goal of its own.</description>
+    </item>
     <item>
       <title>A few fast solutions for Advent of Code 2023</title>
       <link>https://jkaye2012.github.io/posts/aoc-2023/</link>
       <pubDate>Fri, 29 Dec 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/aoc-2023/</guid>
       <description>The Advent of Code is an annual programming competition with a lot of interesting puzzles. While the competition is mostly about answering the questions as quickly as possible, I instead prefer to challenge myself to come up with low-latency solutions for each problem. Now that the 2023 edition of AOC is wrapped up, I thought it would be interesting to go into a bit of detail about some of the faster and more unique solutions that I came up with.</description>
     </item>
-    
     <item>
       <title>Minimize global process</title>
       <link>https://jkaye2012.github.io/posts/minimize-global-process/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/minimize-global-process/</guid>
-      <description>Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams  Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &amp;ldquo;reducing duplicate effort for developers&amp;rdquo;, to which another replied:
- I have worked for a company that forced all engineers to use the same shitty CI/CD system.</description>
+      <description>Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &amp;ldquo;reducing duplicate effort for developers&amp;rdquo;, to which another replied:
+I have worked for a company that forced all engineers to use the same shitty CI/CD system.</description>
     </item>
-    
     <item>
       <title>Software engineering is about thinking, not typing</title>
       <link>https://jkaye2012.github.io/posts/thinking-not-typing/</link>
       <pubDate>Wed, 11 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/thinking-not-typing/</guid>
-      <description>Weeks of coding can save you hours of planning  Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to an extreme that can be unhelpful. While it&amp;rsquo;s almost always a good idea to maintain the ability to iterate quickly and change our minds, that doesn&amp;rsquo;t mean that one shouldn&amp;rsquo;t take time to think before they begin to act.</description>
+      <description>Weeks of coding can save you hours of planning Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to an extreme that can be unhelpful. While it&amp;rsquo;s almost always a good idea to maintain the ability to iterate quickly and change our minds, that doesn&amp;rsquo;t mean that one shouldn&amp;rsquo;t take time to think before they begin to act.</description>
     </item>
-    
     <item>
       <title>Simplicity isn&#39;t easy</title>
       <link>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</link>
       <pubDate>Tue, 05 Sep 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</guid>
-      <description>Simple is the opposite of complex, easy is the opposite of difficult  I spend a lot of time thinking about complexity. I read an essay recently about complexity and cognitive load in software engineering that touches on a specific point that I think is important to the professional development of software: the difference between simplicity and ease.
+      <description>Simple is the opposite of complex, easy is the opposite of difficult I spend a lot of time thinking about complexity. I read an essay recently about complexity and cognitive load in software engineering that touches on a specific point that I think is important to the professional development of software: the difference between simplicity and ease.
 Like many engineers, I don&amp;rsquo;t enjoy working within overly complex systems. The cognitive load required to get anything done within such code bases is far greater than it should be.</description>
     </item>
-    
     <item>
       <title>Cheat codes</title>
       <link>https://jkaye2012.github.io/posts/cheat-codes/</link>
       <pubDate>Mon, 10 Jul 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/cheat-codes/</guid>
-      <description>Support your teams&#39; decision making processes while giving them the space they need to function autonomously.  Autonomy is an important element of highly effective teams. As a leader, there&amp;rsquo;s a difficult balance to be struck between helping your teams get things done and providing the space and freedom that they need to solve problems themselves and own their solutions. Concepts like go slow to move fast can be used to help with this, but even still the core problem remains: how can a leader help teams solve difficult problems without reducing their ability to function autonomously?</description>
+      <description>Support your teams&#39; decision making processes while giving them the space they need to function autonomously. Autonomy is an important element of highly effective teams. As a leader, there&amp;rsquo;s a difficult balance to be struck between helping your teams get things done and providing the space and freedom that they need to solve problems themselves and own their solutions. Concepts like go slow to move fast can be used to help with this, but even still the core problem remains: how can a leader help teams solve difficult problems without reducing their ability to function autonomously?</description>
     </item>
-    
     <item>
       <title>About Me</title>
       <link>https://jkaye2012.github.io/about/</link>
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/about/</guid>
       <description>Background 🔗Hi there! My name is Jordan Kaye, currently the Head of Technology for Belvedere Trading&amp;rsquo;s office in Boulder. My organization is focused on the research and development of fully automated low-latency trading systems.
 As a leader, I believe that maintaining trust through honesty and consistent expectations is key to building high-performing teams and organizations.
 As a technologist, I enjoy exploring different programming languages and paradigms to design robust and easily maintainable systems.</description>
     </item>
-    
     <item>
       <title>Flexible systems</title>
       <link>https://jkaye2012.github.io/posts/flexible-systems/</link>
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/flexible-systems/</guid>
-      <description>Most decisions that you make are not nearly as important as your ability to change them in the future.  When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. Technical systems may raise concerns about choosing the appropriate logging framework or determining the most effective concurrency model. Human systems may instead be concerned with how many meetings to hold, with whom, and how often.</description>
+      <description>Most decisions that you make are not nearly as important as your ability to change them in the future. When designing systems, it&amp;rsquo;s easy to get caught up in the minutia of each decision that has to be made along the way. Technical systems may raise concerns about choosing the appropriate logging framework or determining the most effective concurrency model. Human systems may instead be concerned with how many meetings to hold, with whom, and how often.</description>
     </item>
-    
     <item>
       <title>Lexicon</title>
       <link>https://jkaye2012.github.io/lexicon/</link>
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/lexicon/</guid>
       <description>Words have meaning. It sounds obvious, but all too often it&amp;rsquo;s easy to find ourselves debating someone without first confirming that everyone is talking about the same thing. When I communicate, I like to use very specific and well-defined terms unambiguously. This lexicon serves as a quick reference to the definitions shared across all posts on this site.
 I make no assertion that these definitions are universal!
-System 🔗A system takes its definition from Donella Meadows&#39; Thinking in Systems:</description>
+System 🔗A system takes its definition from Donella Meadows&amp;rsquo; Thinking in Systems:</description>
     </item>
-    
     <item>
       <title>Go slow to move fast</title>
       <link>https://jkaye2012.github.io/posts/go-slow-move-fast/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/go-slow-move-fast/</guid>
-      <description>Engineering teams can often improve their long-term development velocity by slowing down in the short term.  A shared misunderstanding 🔗Technical debt is an often debated topic. Like most concepts in software, it isn&amp;rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&amp;rsquo;t exist, while others feel that technical debt is the most important aspect of product development.</description>
+      <description>Engineering teams can often improve their long-term development velocity by slowing down in the short term. A shared misunderstanding 🔗Technical debt is an often debated topic. Like most concepts in software, it isn&amp;rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&amp;rsquo;t exist, while others feel that technical debt is the most important aspect of product development.</description>
     </item>
-    
     <item>
       <title>Striped development</title>
       <link>https://jkaye2012.github.io/posts/striped-development/</link>
       <pubDate>Sat, 01 Oct 2022 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/striped-development/</guid>
-      <description>Incremental progress on large projects can be achieved by developing functional stripes across the system&#39;s components.  When planning the delivery of a software project, there are many different strategies for handling the design and implementation of the system. At the extremes, we could attempt to complete a fully-specified design before writing any code at all, or we could start writing code without putting any thought towards our design and architecture at all.</description>
+      <description>Incremental progress on large projects can be achieved by developing functional stripes across the system&#39;s components. When planning the delivery of a software project, there are many different strategies for handling the design and implementation of the system. At the extremes, we could attempt to complete a fully-specified design before writing any code at all, or we could start writing code without putting any thought towards our design and architecture at all.</description>
     </item>
-    
     <item>
       <title>Creating a development blog</title>
       <link>https://jkaye2012.github.io/posts/blog-genesis/</link>
       <pubDate>Sun, 13 Dec 2020 18:13:18 -0700</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/blog-genesis/</guid>
       <description>Welcome to the inaugural post of Organizing Chaos!
- I&amp;#39;m the type of person who loves to tinker with new pieces of technology. Recently, I&amp;#39;ve been experimenting with a few different technical ideas that I thought were worth writing about (stay tuned for future posts 😉), so naturally I started to get excited about the prospect of setting up a personal development blog for myself. After a weekend of research and experimentation, I&amp;#39;ve arrived at a very simple (yet effective!</description>
+I&amp;#39;m the type of person who loves to tinker with new pieces of technology. Recently, I&amp;#39;ve been experimenting with a few different technical ideas that I thought were worth writing about (stay tuned for future posts 😉), so naturally I started to get excited about the prospect of setting up a personal development blog for myself. After a weekend of research and experimentation, I&amp;#39;ve arrived at a very simple (yet effective!</description>
     </item>
-    
   </channel>
 </rss>

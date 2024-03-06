@@ -6,87 +6,70 @@
     <description>Recent content in Tags on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 29 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 06 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jkaye2012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>reflection</title>
+      <link>https://jkaye2012.github.io/tags/reflection/</link>
+      <pubDate>Wed, 06 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/tags/reflection/</guid>
+      <description></description>
+    </item>
     <item>
       <title>aoc</title>
       <link>https://jkaye2012.github.io/tags/aoc/</link>
       <pubDate>Fri, 29 Dec 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/aoc/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>performance</title>
       <link>https://jkaye2012.github.io/tags/performance/</link>
       <pubDate>Fri, 29 Dec 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/performance/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>rust</title>
       <link>https://jkaye2012.github.io/tags/rust/</link>
       <pubDate>Fri, 29 Dec 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/rust/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>practices</title>
       <link>https://jkaye2012.github.io/tags/practices/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/practices/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>sdlc</title>
       <link>https://jkaye2012.github.io/tags/sdlc/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/sdlc/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>leadership</title>
       <link>https://jkaye2012.github.io/tags/leadership/</link>
       <pubDate>Wed, 11 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/leadership/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>software</title>
       <link>https://jkaye2012.github.io/tags/software/</link>
       <pubDate>Wed, 11 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/software/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>lexicon</title>
       <link>https://jkaye2012.github.io/tags/lexicon/</link>
       <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/tags/lexicon/</guid>
       <description></description>
     </item>
-    
-    <item>
-      <title>reflection</title>
-      <link>https://jkaye2012.github.io/tags/reflection/</link>
-      <pubDate>Wed, 21 Jun 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://jkaye2012.github.io/tags/reflection/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>

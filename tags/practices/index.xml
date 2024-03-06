@@ -6,34 +6,29 @@
     <description>Recent content in practices on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://jkaye2012.github.io/tags/practices/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jkaye2012.github.io/tags/practices/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Minimize global process</title>
       <link>https://jkaye2012.github.io/posts/minimize-global-process/</link>
       <pubDate>Wed, 15 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/minimize-global-process/</guid>
-      <description>Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams  Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &amp;ldquo;reducing duplicate effort for developers&amp;rdquo;, to which another replied:
- I have worked for a company that forced all engineers to use the same shitty CI/CD system.</description>
+      <description>Global consistency comes at the cost of autonomy; be careful not to stifle what could be your most effective teams Earlier this week, I was discussing Platform Engineering with some other technical leaders. Someone suggested that one of the main benefits of an effective Platform was &amp;ldquo;reducing duplicate effort for developers&amp;rdquo;, to which another replied:
+I have worked for a company that forced all engineers to use the same shitty CI/CD system.</description>
     </item>
-    
     <item>
       <title>Go slow to move fast</title>
       <link>https://jkaye2012.github.io/posts/go-slow-move-fast/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/go-slow-move-fast/</guid>
-      <description>Engineering teams can often improve their long-term development velocity by slowing down in the short term.  A shared misunderstanding 🔗Technical debt is an often debated topic. Like most concepts in software, it isn&amp;rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&amp;rsquo;t exist, while others feel that technical debt is the most important aspect of product development.</description>
+      <description>Engineering teams can often improve their long-term development velocity by slowing down in the short term. A shared misunderstanding 🔗Technical debt is an often debated topic. Like most concepts in software, it isn&amp;rsquo;t particularly difficult to find arguments supporting opposite sides of the spectrum - in a single minute of searching I was able to find that some believe that technical debt doesn&amp;rsquo;t exist, while others feel that technical debt is the most important aspect of product development.</description>
     </item>
-    
     <item>
       <title>Striped development</title>
       <link>https://jkaye2012.github.io/posts/striped-development/</link>
       <pubDate>Sat, 01 Oct 2022 00:00:00 +0000</pubDate>
-      
       <guid>https://jkaye2012.github.io/posts/striped-development/</guid>
-      <description>Incremental progress on large projects can be achieved by developing functional stripes across the system&#39;s components.  When planning the delivery of a software project, there are many different strategies for handling the design and implementation of the system. At the extremes, we could attempt to complete a fully-specified design before writing any code at all, or we could start writing code without putting any thought towards our design and architecture at all.</description>
+      <description>Incremental progress on large projects can be achieved by developing functional stripes across the system&#39;s components. When planning the delivery of a software project, there are many different strategies for handling the design and implementation of the system. At the extremes, we could attempt to complete a fully-specified design before writing any code at all, or we could start writing code without putting any thought towards our design and architecture at all.</description>
     </item>
-    
   </channel>
 </rss>
