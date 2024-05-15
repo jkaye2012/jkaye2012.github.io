@@ -6,8 +6,15 @@
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Mar 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 14 May 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A Rust &#43; WASM development environment with Nix</title>
+      <link>https://jkaye2012.github.io/posts/rust-wasm-nix/</link>
+      <pubDate>Tue, 14 May 2024 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/rust-wasm-nix/</guid>
+      <description>Getting started with a new ecosystem can be difficult. Using Nix makes the solution reproducible! I was recently following the setup guide for Rust and WebAssembly and found more surprises than I was expecting while setting up the development environment using a Nix Flake. As I&amp;rsquo;ve also been working towards a personal repository of Flake templates, I thought it might help others to detail the issues that I encountered and how I solved them.</description>
+    </item>
     <item>
       <title>Enabling constraints</title>
       <link>https://jkaye2012.github.io/posts/enabling-constraints/</link>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>A Rust &#43; WASM development environment with Nix | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Getting started with a new ecosystem can be difficult. Using Nix makes the solution reproducible! I was recently following the setup guide for Rust and WebAssembly and found more surprises than I was expecting while setting up the development environment using a Nix Flake. As I&rsquo;ve also been working towards a personal repository of Flake templates, I thought it might help others to detail the issues that I encountered and how I solved them.">
+<meta name="generator" content="Hugo 0.120.3">
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">A Rust &#43; WASM development environment with Nix</h1>
+
+  <div class="tip">
+    <time datetime="2024-05-14 00:00:00 &#43;0000 UTC">May 14, 2024</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      1501 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      8 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+Getting started with a new ecosystem can be difficult. Using Nix makes the solution reproducible!
+
+    </p>
+</figure>
+<hr />
+
+<p>I was recently following the <a href="https://rustwasm.github.io/docs/book/game-of-life/setup.html" target="_blank" rel="noopener">setup guide</a> for Rust and WebAssembly
+and found more surprises than I was expecting while setting up the development environment using a <a href="https://nixos.wiki/wiki/Flakes" target="_blank" rel="noopener">Nix Flake</a>.
+As I&rsquo;ve also been working towards a <a href="https://github.com/jkaye2012/flake-templates" target="_blank" rel="noopener">personal repository of Flake templates</a>, I thought it might
+help others to detail the issues that I encountered and how I solved them. It&rsquo;s as much about the process of debugging a new Flake environment
+(and a new toolchain in general) as it is about the final state of the template!</p>
+<p>This post assumes some basic familiarity with Nix and Flakes. I&rsquo;m still relatively new to Nix, so if you notice anything in this post that you think is
+incorrect, please <a href="https://github.com/jkaye2012/organizing-chaos/issues/new" target="_blank" rel="noopener">open an issue</a> so that I can fix it.</p>
+<p>If you already know what you&rsquo;re doing and you&rsquo;re here looking to get started without the more in-depth explanation, you should be able to use the
+<a href="https://github.com/jkaye2012/flake-templates/tree/main/rust-wasm-project-template" target="_blank" rel="noopener">rust-wasm-project template</a> via
+<code>github:jkaye2012/flake-templates#rust-wasm-project</code>. More detailed instructions can be found in the <a href="#bringing-it-all-together">last section of the post</a>.</p>
+<p>With the disclaimers out of the way, let&rsquo;s get started!</p>
+<h1 id="rust-toolchains">Rust toolchains <a href="#rust-toolchains" class="anchor">🔗</a></h1><p>The first step in setting up a development environment is installing dependencies (surprise!). We need the Rust toolchain,
+<code>wasm-pack</code> (to build WebAssembly from Rust code), and <code>npm</code> (to manage web dependencies, build/run the site, etc). This is Nix, so dependency
+installation should be the easy part:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nix" data-lang="nix"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rust with WebAssembly&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  inputs <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    fenix <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:nix-community/fenix&#34;</span>;
+</span></span><span style="display:flex;"><span>      inputs<span style="color:#f92672">.</span>nixpkgs<span style="color:#f92672">.</span>follows <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs&#34;</span>;
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    nixpkgs<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs/nixos-23.11&#34;</span>;
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:numtide/flake-utils&#34;</span>;
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  outputs <span style="color:#f92672">=</span> { self<span style="color:#f92672">,</span> fenix<span style="color:#f92672">,</span> nixpkgs<span style="color:#f92672">,</span> flake-utils }:
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>lib<span style="color:#f92672">.</span>eachDefaultSystem
+</span></span><span style="display:flex;"><span>      (system:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span>
+</span></span><span style="display:flex;"><span>          pkgs <span style="color:#f92672">=</span> nixpkgs<span style="color:#f92672">.</span>legacyPackages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>;
+</span></span><span style="display:flex;"><span>          f <span style="color:#f92672">=</span> fenix<span style="color:#f92672">.</span>packages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">in</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            devShells<span style="color:#f92672">.</span>default <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>              pkgs<span style="color:#f92672">.</span>mkShell {
+</span></span><span style="display:flex;"><span>                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rust-wasm-first-attempt&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                packages <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> pkgs; [
+</span></span><span style="display:flex;"><span>                  f<span style="color:#f92672">.</span>stable<span style="color:#f92672">.</span>toolchain
+</span></span><span style="display:flex;"><span>                  nodejs_21
+</span></span><span style="display:flex;"><span>                  wasm-pack
+</span></span><span style="display:flex;"><span>                ];
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Unfortunately, this isn&rsquo;t quite the entire story. If we attempt to build the <a href="https://github.com/rustwasm/wasm-pack-template" target="_blank" rel="noopener">wasm-pack template project</a>
+in this environment, the Rust build functions normally, but the WebAssembly portion fails loudly:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ nix develop
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nix:rust-wasm-first-attempt-env<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ cargo build
+</span></span><span style="display:flex;"><span>   Compiling proc-macro2 v1.0.81
+</span></span><span style="display:flex;"><span>   Compiling unicode-ident v1.0.12
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen-shared v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling bumpalo v3.16.0
+</span></span><span style="display:flex;"><span>   Compiling log v0.4.21
+</span></span><span style="display:flex;"><span>   Compiling once_cell v1.19.0
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling cfg-if v1.0.0
+</span></span><span style="display:flex;"><span>   Compiling quote v1.0.36
+</span></span><span style="display:flex;"><span>   Compiling syn v2.0.60
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen-backend v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen-macro-support v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen-macro v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling console_error_panic_hook v0.1.7
+</span></span><span style="display:flex;"><span>   Compiling replace-me v0.1.0 <span style="color:#f92672">(</span>/home/jkaye/test<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Finished <span style="color:#e6db74">`</span>dev<span style="color:#e6db74">`</span> profile <span style="color:#f92672">[</span>unoptimized + debuginfo<span style="color:#f92672">]</span> target<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> in 10.34s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nix:rust-wasm-first-attempt-env<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ wasm-pack build
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 🎯  Checking <span style="color:#66d9ef">for</span> the Wasm target...
+</span></span><span style="display:flex;"><span>Error: wasm32-unknown-unknown target not found in sysroot: <span style="color:#e6db74">&#34;/nix/store/l7rmk66qn9hbdfd0190wqzdh2qfhyysr-rust-stable-2024-05-02&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Used rustc from the following path: <span style="color:#e6db74">&#34;/nix/store/l7rmk66qn9hbdfd0190wqzdh2qfhyysr-rust-stable-2024-05-02/bin/rustc&#34;</span>
+</span></span><span style="display:flex;"><span>It looks like Rustup is not being used. For non-Rustup setups, the wasm32-unknown-unknown target needs to be installed manually. See https://rustwasm.github.io/wasm-pack/book/prerequisites/non-rustup-setups.html on how to <span style="color:#66d9ef">do</span> this.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Caused by: wasm32-unknown-unknown target not found in sysroot: <span style="color:#e6db74">&#34;/nix/store/l7rmk66qn9hbdfd0190wqzdh2qfhyysr-rust-stable-2024-05-02&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Used rustc from the following path: <span style="color:#e6db74">&#34;/nix/store/l7rmk66qn9hbdfd0190wqzdh2qfhyysr-rust-stable-2024-05-02/bin/rustc&#34;</span>
+</span></span><span style="display:flex;"><span>It looks like Rustup is not being used. For non-Rustup setups, the wasm32-unknown-unknown target needs to be installed manually. See https://rustwasm.github.io/wasm-pack/book/prerequisites/non-rustup-setups.html on how to <span style="color:#66d9ef">do</span> this.
+</span></span></code></pre></div><p>This failure is because the Rust toolchain is being managed with Nix rather than with Rustup directly. The error message tells us how to solve this problem:
+<code>the wasm32-unknown-unknown target needs to be installed manually</code>. The <a href="https://github.com/nix-community/fenix" target="_blank" rel="noopener">Fenix documentation</a> points to the <code>combine</code>
+derivation, which allows for combining multiple Rust toolchain components into a single derivation that we can use. So, instead of relying directly upon
+<code>stable.toolchain</code>, we instead must bring the <code>wasm32-unknown-unknown</code> component into the mix:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nix" data-lang="nix"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rust with WebAssembly&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  inputs <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    fenix <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:nix-community/fenix&#34;</span>;
+</span></span><span style="display:flex;"><span>      inputs<span style="color:#f92672">.</span>nixpkgs<span style="color:#f92672">.</span>follows <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs&#34;</span>;
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    nixpkgs<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs/nixos-23.11&#34;</span>;
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:numtide/flake-utils&#34;</span>;
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  outputs <span style="color:#f92672">=</span> { self<span style="color:#f92672">,</span> fenix<span style="color:#f92672">,</span> nixpkgs<span style="color:#f92672">,</span> flake-utils }:
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>lib<span style="color:#f92672">.</span>eachDefaultSystem
+</span></span><span style="display:flex;"><span>      (system:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span>
+</span></span><span style="display:flex;"><span>          pkgs <span style="color:#f92672">=</span> nixpkgs<span style="color:#f92672">.</span>legacyPackages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>;
+</span></span><span style="display:flex;"><span>          f <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> fenix<span style="color:#f92672">.</span>packages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>; combine [ <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>            stable<span style="color:#f92672">.</span>toolchain
+</span></span><span style="display:flex;"><span>            targets<span style="color:#f92672">.</span>wasm32-unknown-unknown<span style="color:#f92672">.</span>stable<span style="color:#f92672">.</span>rust-std
+</span></span><span style="display:flex;"><span>          ];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">in</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            devShells<span style="color:#f92672">.</span>default <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>              pkgs<span style="color:#f92672">.</span>mkShell {
+</span></span><span style="display:flex;"><span>                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rust-wasm-second-attempt&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                packages <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> pkgs; [
+</span></span><span style="display:flex;"><span>                  f <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>                  nodejs_21
+</span></span><span style="display:flex;"><span>                  wasm-pack
+</span></span><span style="display:flex;"><span>                ];
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If I hadn&rsquo;t read the Fenix documentation, it wouldn&rsquo;t have been so easy to solve this problem. Reading documentation is something that sounds simple
+and obvious, but in my experience it&rsquo;s a rare skill. If you&rsquo;re finding yourself frustrated with a problem and can&rsquo;t find a solution to it, take a deep
+breath and read the docs. A large portion of the time you&rsquo;ll find what you&rsquo;re looking for.</p>
+<h1 id="linking-wasm">Linking WASM <a href="#linking-wasm" class="anchor">🔗</a></h1><p>The WebAssembly toolchain is good to go! So what&rsquo;s next?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ nix develop
+</span></span><span style="display:flex;"><span>warning: Git tree <span style="color:#e6db74">&#39;/home/jkaye/test&#39;</span> is dirty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nix:rust-wasm-second-attempt-env<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ wasm-pack build
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 🎯  Checking <span style="color:#66d9ef">for</span> the Wasm target...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 🌀  Compiling to Wasm...
+</span></span><span style="display:flex;"><span>   Compiling cfg-if v1.0.0
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling console_error_panic_hook v0.1.7
+</span></span><span style="display:flex;"><span>   Compiling replace-me v0.1.0 <span style="color:#f92672">(</span>/home/jkaye/test<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>error: linking with <span style="color:#e6db74">`</span>rust-lld<span style="color:#e6db74">`</span> failed: exit status: <span style="color:#ae81ff">127</span>
+</span></span><span style="display:flex;"><span>  |
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">=</span> note: Could not start dynamically linked executable: rust-lld
+</span></span><span style="display:flex;"><span>          NixOS cannot run dynamically linked executables intended <span style="color:#66d9ef">for</span> generic
+</span></span><span style="display:flex;"><span>          linux environments out of the box. For more information, see:
+</span></span><span style="display:flex;"><span>          https://nix.dev/permalink/stub-ld
+</span></span><span style="display:flex;"><span>          
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>error: could not compile <span style="color:#e6db74">`</span>replace-me<span style="color:#e6db74">`</span> <span style="color:#f92672">(</span>lib<span style="color:#f92672">)</span> due to <span style="color:#ae81ff">1</span> previous error; <span style="color:#ae81ff">1</span> warning emitted
+</span></span><span style="display:flex;"><span>Error: Compiling your crate to WebAssembly failed
+</span></span><span style="display:flex;"><span>Caused by: Compiling your crate to WebAssembly failed
+</span></span><span style="display:flex;"><span>Caused by: failed to execute <span style="color:#e6db74">`</span>cargo build<span style="color:#e6db74">`</span>: exited with exit status: <span style="color:#ae81ff">101</span>
+</span></span><span style="display:flex;"><span>  full command: cd <span style="color:#e6db74">&#34;/home/jkaye/test&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#e6db74">&#34;cargo&#34;</span> <span style="color:#e6db74">&#34;build&#34;</span> <span style="color:#e6db74">&#34;--lib&#34;</span> <span style="color:#e6db74">&#34;--release&#34;</span> <span style="color:#e6db74">&#34;--target&#34;</span> <span style="color:#e6db74">&#34;wasm32-unknown-unknown&#34;</span>
+</span></span></code></pre></div><p>Linking issues! This was a new one for me on NixOS. Matklad has a
+<a href="https://matklad.github.io/2022/03/14/rpath-or-why-lld-doesnt-work-on-nixos.html" target="_blank" rel="noopener">great explanation</a> of what&rsquo;s going on here;
+however, I didn&rsquo;t love the idea of modifying the flags in the Cargo configuration because that wouldn&rsquo;t be reproducible for other
+users. My solution was instead to modify Cargo&rsquo;s environment variables in the development environment:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nix" data-lang="nix"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rust with WebAssembly&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  inputs <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    fenix <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:nix-community/fenix&#34;</span>;
+</span></span><span style="display:flex;"><span>      inputs<span style="color:#f92672">.</span>nixpkgs<span style="color:#f92672">.</span>follows <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs&#34;</span>;
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    nixpkgs<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs/nixos-23.11&#34;</span>;
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:numtide/flake-utils&#34;</span>;
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  outputs <span style="color:#f92672">=</span> { self<span style="color:#f92672">,</span> fenix<span style="color:#f92672">,</span> nixpkgs<span style="color:#f92672">,</span> flake-utils }:
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>lib<span style="color:#f92672">.</span>eachDefaultSystem
+</span></span><span style="display:flex;"><span>      (system:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span>
+</span></span><span style="display:flex;"><span>          pkgs <span style="color:#f92672">=</span> nixpkgs<span style="color:#f92672">.</span>legacyPackages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>;
+</span></span><span style="display:flex;"><span>          f <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> fenix<span style="color:#f92672">.</span>packages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>; combine [
+</span></span><span style="display:flex;"><span>            stable<span style="color:#f92672">.</span>toolchain
+</span></span><span style="display:flex;"><span>            targets<span style="color:#f92672">.</span>wasm32-unknown-unknown<span style="color:#f92672">.</span>stable<span style="color:#f92672">.</span>rust-std
+</span></span><span style="display:flex;"><span>          ];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">in</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            devShells<span style="color:#f92672">.</span>default <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>              pkgs<span style="color:#f92672">.</span>mkShell {
+</span></span><span style="display:flex;"><span>                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rust-wasm-final-attempt&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                packages <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> pkgs; [
+</span></span><span style="display:flex;"><span>                  f
+</span></span><span style="display:flex;"><span>                  llvmPackages<span style="color:#f92672">.</span>bintools <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>                  nodejs_21
+</span></span><span style="display:flex;"><span>                  wasm-pack
+</span></span><span style="display:flex;"><span>                ];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lld&#34;</span>; <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I don&rsquo;t <em>think</em> this modification is necessary on operating systems other than NixOS, but in my testing it also doesn&rsquo;t seem to
+have any negative effects, so for now I&rsquo;m happy with it. With this, we can now successfully build our WASM:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ nix develop
+</span></span><span style="display:flex;"><span>warning: Git tree <span style="color:#e6db74">&#39;/home/jkaye/test&#39;</span> is dirty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>nix:rust-wasm-final-attempt-env<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>jkaye@jkaye-nixos:~/test<span style="color:#f92672">]</span>$ wasm-pack build
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 🎯  Checking <span style="color:#66d9ef">for</span> the Wasm target...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 🌀  Compiling to Wasm...
+</span></span><span style="display:flex;"><span>   Compiling cfg-if v1.0.0
+</span></span><span style="display:flex;"><span>   Compiling wasm-bindgen v0.2.92
+</span></span><span style="display:flex;"><span>   Compiling console_error_panic_hook v0.1.7
+</span></span><span style="display:flex;"><span>   Compiling replace-me v0.1.0 <span style="color:#f92672">(</span>/home/jkaye/test<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Finished <span style="color:#e6db74">`</span>release<span style="color:#e6db74">`</span> profile <span style="color:#f92672">[</span>optimized<span style="color:#f92672">]</span> target<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> in 1.47s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: ⬇️   Installing wasm-bindgen...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: Optimizing wasm binaries with <span style="color:#e6db74">`</span>wasm-opt<span style="color:#e6db74">`</span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: Optional fields missing from Cargo.toml: <span style="color:#e6db74">&#39;description&#39;</span>, <span style="color:#e6db74">&#39;repository&#39;</span>, and <span style="color:#e6db74">&#39;license&#39;</span>. These are not necessary, but recommended
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: ✨   Done in 1.92s
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INFO<span style="color:#f92672">]</span>: 📦   Your wasm pkg is ready to publish at /home/jkaye/test/pkg.
+</span></span></code></pre></div><h1 id="editor-integrations">Editor integrations <a href="#editor-integrations" class="anchor">🔗</a></h1><p>The final change is for quality of life more than anything. Fenix provides a Rust <a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">LSP</a>
+server, but for TypeScript, JS, HTML, and CSS editor support is still lacking. Of course, there are nixpkgs for this functionality, so fixing
+this is the easiest change of all:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nix" data-lang="nix"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  description <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Rust with WebAssembly&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  inputs <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    fenix <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:nix-community/fenix&#34;</span>;
+</span></span><span style="display:flex;"><span>      inputs<span style="color:#f92672">.</span>nixpkgs<span style="color:#f92672">.</span>follows <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs&#34;</span>;
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    nixpkgs<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;nixpkgs/nixos-23.11&#34;</span>;
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;github:numtide/flake-utils&#34;</span>;
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  outputs <span style="color:#f92672">=</span> { self<span style="color:#f92672">,</span> fenix<span style="color:#f92672">,</span> nixpkgs<span style="color:#f92672">,</span> flake-utils }:
+</span></span><span style="display:flex;"><span>    flake-utils<span style="color:#f92672">.</span>lib<span style="color:#f92672">.</span>eachDefaultSystem
+</span></span><span style="display:flex;"><span>      (system:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span>
+</span></span><span style="display:flex;"><span>          pkgs <span style="color:#f92672">=</span> nixpkgs<span style="color:#f92672">.</span>legacyPackages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>;
+</span></span><span style="display:flex;"><span>          f <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> fenix<span style="color:#f92672">.</span>packages<span style="color:#f92672">.</span><span style="color:#e6db74">${</span>system<span style="color:#e6db74">}</span>; combine [
+</span></span><span style="display:flex;"><span>            stable<span style="color:#f92672">.</span>toolchain
+</span></span><span style="display:flex;"><span>            targets<span style="color:#f92672">.</span>wasm32-unknown-unknown<span style="color:#f92672">.</span>stable<span style="color:#f92672">.</span>rust-std
+</span></span><span style="display:flex;"><span>          ];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">in</span>
+</span></span><span style="display:flex;"><span>          {
+</span></span><span style="display:flex;"><span>            devShells<span style="color:#f92672">.</span>default <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>              pkgs<span style="color:#f92672">.</span>mkShell {
+</span></span><span style="display:flex;"><span>                name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;rust-wasm-final-attempt&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                packages <span style="color:#f92672">=</span> <span style="color:#66d9ef">with</span> pkgs; [
+</span></span><span style="display:flex;"><span>                  f
+</span></span><span style="display:flex;"><span>                  llvmPackages<span style="color:#f92672">.</span>bintools
+</span></span><span style="display:flex;"><span>                  nodePackages<span style="color:#f92672">.</span>typescript-language-server <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>                  nodejs_21
+</span></span><span style="display:flex;"><span>                  vscode-langservers-extracted <span style="color:#75715e"># &lt;-- change here</span>
+</span></span><span style="display:flex;"><span>                  wasm-pack
+</span></span><span style="display:flex;"><span>                ];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lld&#34;</span>; 
+</span></span><span style="display:flex;"><span>              };
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>      );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>You&rsquo;ll still have to configure your editor of choice to detect and integrate these language servers, but I don&rsquo;t think that choosing
+an editor for someone is the right thing to do. So long as your editor is configured for LSP support in general (personally, I&rsquo;m using
+Neovim for this), things should &ldquo;just work&rdquo;.</p>
+<h1 id="bringing-it-all-together">Bringing it all together <a href="#bringing-it-all-together" class="anchor">🔗</a></h1><p>The moral of the story is: when trying something new, don&rsquo;t let unexpected errors scare you away. The solution is often closer than you may think.</p>
+<p>The easiest way to use all of this if you&rsquo;re just trying to get started with a new project is to use the template directly. These templates are
+mostly for my personal use, but if you&rsquo;re okay with a small amount of drift, feel free to use them yourself. I&rsquo;ve tried to make it about as easy
+as possible to start a new project:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>mkdir test <span style="color:#f92672">&amp;&amp;</span> cd test
+</span></span><span style="display:flex;"><span>nix flake init -t github:jkaye2012/flake-templates#rust-wasm-project
+</span></span><span style="display:flex;"><span>git init <span style="color:#f92672">&amp;&amp;</span> git add .
+</span></span><span style="display:flex;"><span>nix develop
+</span></span><span style="display:flex;"><span>wasm-pack build
+</span></span><span style="display:flex;"><span>cd www
+</span></span><span style="display:flex;"><span>npm install
+</span></span><span style="display:flex;"><span>npm run start
+</span></span></code></pre></div><p>This assumes that you have Nix installed and Flakes enabled. If so, you should be off to the races! Browse to <code>localhost:8080</code> and your
+site should be up and running. The slug <code>replace-me</code> can be replaced using <code>sed</code> or any other method of your choice to modify the project
+name. This one-liner may be of use:</p>
+<p><code>find . -type f -exec sed -i'' s/replace-me/cool-project-name/g {} \;</code></p>
+<p>Happy hacking!</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/nix">nix</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/rust">rust</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/wasm">wasm</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>

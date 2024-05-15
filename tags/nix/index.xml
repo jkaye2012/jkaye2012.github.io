@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>rust on Organizing Chaos</title>
-    <link>https://jkaye2012.github.io/tags/rust/</link>
-    <description>Recent content in rust on Organizing Chaos</description>
+    <title>nix on Organizing Chaos</title>
+    <link>https://jkaye2012.github.io/tags/nix/</link>
+    <description>Recent content in nix on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 14 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://jkaye2012.github.io/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://jkaye2012.github.io/tags/nix/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A Rust &#43; WASM development environment with Nix</title>
       <link>https://jkaye2012.github.io/posts/rust-wasm-nix/</link>
       <pubDate>Tue, 14 May 2024 00:00:00 +0000</pubDate>
       <guid>https://jkaye2012.github.io/posts/rust-wasm-nix/</guid>
       <description>Getting started with a new ecosystem can be difficult. Using Nix makes the solution reproducible! I was recently following the setup guide for Rust and WebAssembly and found more surprises than I was expecting while setting up the development environment using a Nix Flake. As I&amp;rsquo;ve also been working towards a personal repository of Flake templates, I thought it might help others to detail the issues that I encountered and how I solved them.</description>
-    </item>
-    <item>
-      <title>A few fast solutions for Advent of Code 2023</title>
-      <link>https://jkaye2012.github.io/posts/aoc-2023/</link>
-      <pubDate>Fri, 29 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://jkaye2012.github.io/posts/aoc-2023/</guid>
-      <description>The Advent of Code is an annual programming competition with a lot of interesting puzzles. While the competition is mostly about answering the questions as quickly as possible, I instead prefer to challenge myself to come up with low-latency solutions for each problem. Now that the 2023 edition of AOC is wrapped up, I thought it would be interesting to go into a bit of detail about some of the faster and more unique solutions that I came up with.</description>
     </item>
   </channel>
 </rss>
