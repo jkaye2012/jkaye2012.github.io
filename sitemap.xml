@@ -2,31 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://jkaye2012.github.io/tags/leadership/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/posts/overcorrection/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/posts/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/reflection/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jkaye2012.github.io/tags/</loc>
+    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://jkaye2012.github.io/posts/rust-wasm-nix/</loc>
     <lastmod>2024-05-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/nix/</loc>
     <lastmod>2024-05-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://jkaye2012.github.io/</loc>
-    <lastmod>2024-05-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jkaye2012.github.io/posts/</loc>
-    <lastmod>2024-05-14T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://jkaye2012.github.io/tags/rust/</loc>
-    <lastmod>2024-05-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jkaye2012.github.io/tags/</loc>
     <lastmod>2024-05-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/wasm/</loc>
     <lastmod>2024-05-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/posts/enabling-constraints/</loc>
-    <lastmod>2024-03-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jkaye2012.github.io/tags/reflection/</loc>
     <lastmod>2024-03-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/posts/aoc-2023/</loc>
@@ -46,9 +52,6 @@
   </url><url>
     <loc>https://jkaye2012.github.io/tags/sdlc/</loc>
     <lastmod>2023-11-15T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://jkaye2012.github.io/tags/leadership/</loc>
-    <lastmod>2023-10-11T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jkaye2012.github.io/tags/software/</loc>
     <lastmod>2023-10-11T00:00:00+00:00</lastmod>
