@@ -13,15 +13,14 @@
       <link>https://jkaye2012.github.io/posts/thinking-not-typing/</link>
       <pubDate>Wed, 11 Oct 2023 00:00:00 +0000</pubDate>
       <guid>https://jkaye2012.github.io/posts/thinking-not-typing/</guid>
-      <description>Weeks of coding can save you hours of planning Software engineering best practices emphasize and value the importance of iterative work. They encourage working in ways that give us opportunities to make decisions frequently and adapt to changing circumstances. These principles are nearly ubiquitous and seem necessary for successful engineering efforts at large scales, but the concept is sometimes taken to an extreme that can be unhelpful. While it&amp;rsquo;s almost always a good idea to maintain the ability to iterate quickly and change our minds, that doesn&amp;rsquo;t mean that one shouldn&amp;rsquo;t take time to think before they begin to act.</description>
+      <description>Weeks of coding can save you hours of planning</description>
     </item>
     <item>
       <title>Simplicity isn&#39;t easy</title>
       <link>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</link>
       <pubDate>Tue, 05 Sep 2023 00:00:00 +0000</pubDate>
       <guid>https://jkaye2012.github.io/posts/simplicity-isnt-easy/</guid>
-      <description>Simple is the opposite of complex, easy is the opposite of difficult I spend a lot of time thinking about complexity. I read an essay recently about complexity and cognitive load in software engineering that touches on a specific point that I think is important to the professional development of software: the difference between simplicity and ease.
-Like many engineers, I don&amp;rsquo;t enjoy working within overly complex systems. The cognitive load required to get anything done within such code bases is far greater than it should be.</description>
+      <description>Simple is the opposite of complex, easy is the opposite of difficult</description>
     </item>
   </channel>
 </rss>
