@@ -6,8 +6,15 @@
     <description>Recent content in practices on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Nov 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 Nov 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/tags/practices/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Technical debt and conscious decision making</title>
+      <link>https://jkaye2012.github.io/posts/tech-debt-podcast/</link>
+      <pubDate>Fri, 15 Nov 2024 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/tech-debt-podcast/</guid>
+      <description>I joined a podcast with Amir Bormand to discuss technical debt and how to make it useful.</description>
+    </item>
     <item>
       <title>Spending time wisely</title>
       <link>https://jkaye2012.github.io/posts/spending-time-wisely/</link>
