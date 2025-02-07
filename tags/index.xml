@@ -6,8 +6,15 @@
     <description>Recent content in Tags on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Nov 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>rust</title>
+      <link>https://jkaye2012.github.io/tags/rust/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/tags/rust/</guid>
+      <description></description>
+    </item>
     <item>
       <title>podcast</title>
       <link>https://jkaye2012.github.io/tags/podcast/</link>
@@ -41,13 +48,6 @@
       <link>https://jkaye2012.github.io/tags/nix/</link>
       <pubDate>Tue, 14 May 2024 00:00:00 +0000</pubDate>
       <guid>https://jkaye2012.github.io/tags/nix/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>rust</title>
-      <link>https://jkaye2012.github.io/tags/rust/</link>
-      <pubDate>Tue, 14 May 2024 00:00:00 +0000</pubDate>
-      <guid>https://jkaye2012.github.io/tags/rust/</guid>
       <description></description>
     </item>
     <item>

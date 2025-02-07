@@ -6,8 +6,15 @@
     <description>Recent content on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Nov 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Refined: simple refinement types for Rust</title>
+      <link>https://jkaye2012.github.io/posts/refined/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/refined/</guid>
+      <description>An alpha library for refinement types with rich support for serde</description>
+    </item>
     <item>
       <title>Technical debt and conscious decision making</title>
       <link>https://jkaye2012.github.io/posts/tech-debt-podcast/</link>

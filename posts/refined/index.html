@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Refined: simple refinement types for Rust | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="An alpha library for refinement types with rich support for serde">
+<meta name="generator" content="Hugo 0.120.3">
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">Refined: simple refinement types for Rust</h1>
+
+  <div class="tip">
+    <time datetime="2025-02-07 00:00:00 &#43;0000 UTC">Feb 7, 2025</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      1008 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      5 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    <!-- raw HTML omitted -->
+
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+An alpha library for refinement types with rich support for <a href="https://serde.rs/">serde</a>
+
+    </p>
+</figure>
+<hr />
+
+<!-- raw HTML omitted -->
+<p>In my off time for the past few month or two I&rsquo;ve been working on
+<a href="https://crates.io/crates/refined" target="_blank" rel="noopener">refined</a>, a library to provide better support for
+<a href="https://en.wikipedia.org/wiki/Refinement_type" target="_blank" rel="noopener">refinement types</a> in Rust. The basic functionality
+is now where I want it to be, so I&rsquo;ve released an initial alpha version so that others can play with
+it if they&rsquo;d find it useful. The <a href="https://docs.rs/refined/latest/refined/" target="_blank" rel="noopener">crate documentation</a> is
+good enough to get up and running (I think,
+<a href="https://github.com/jkaye2012/refined/issues/new?template=Blank&#43;issue" target="_blank" rel="noopener">let me know</a> if you
+disagree!), but I also wanted to provide more background on why I&rsquo;ve been working on this the types
+of problems that the library solves.</p>
+<h2 id="what-is-refinement">What is refinement? <a href="#what-is-refinement" class="anchor">🔗</a></h2><p>To understand <code>refined</code>, it&rsquo;s necessary to first understand the concept of refinement in general. An
+excerpt from the definition linked above:</p>
+<blockquote>
+<p>A refinement type is a type endowed with a predicate which is assumed to hold for any element of
+the refined type. Refinement types can express preconditions when used as function arguments or
+postconditions when used as return types.</p>
+</blockquote>
+<p>I like to think of refinement as narrowing the possible set of values that can be associated with a
+type. The easiest examples to consider are strings and numerics. These are ubiquitous types that
+have a huge range of possible values, which is part of what makes them so useful in general. In more
+specific contexts, however, it&rsquo;s often only correct for certain values to take on a very small
+subset of those possible values. This is where refinement becomes useful: it allows us to model
+those domain invariants within the type system, improving documentation and maintainability while
+simultaneously preventing bugs.</p>
+<h2 id="a-contrived-example">A contrived example <a href="#a-contrived-example" class="anchor">🔗</a></h2><p>As a contrived example, we could conceive of a situation wherein we need to score a test, but where
+the problem domain dictates that test scores must lie between 1 and 100 inclusive. In Rust, the best
+that we can do to model this value is to reach for <code>u8</code>. Using <code>refined</code>, we can lift the domain
+invariant into the type system by defining a <code>Refinement</code> over <code>u8</code> like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> refined::{Refinement, RefinementError, boundable::unsigned::ClosedInterval};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TestScore</span> <span style="color:#f92672">=</span> Refinement<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span>, ClosedInterval<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span><span style="color:#f92672">&gt;&gt;</span>;
+</span></span></code></pre></div><p>With this definition in place, <code>refined</code> will now guarantee that any value of type <code>TestScore</code> is a
+<code>u8</code> between 1 and 100. If you have a <code>TestScore</code>, you can be sure that it is a proper value as
+dictated by the domain.</p>
+<p><a href="https://docs.rs/refined/latest/refined/struct.Refinement.html#method.refine" target="_blank" rel="noopener">Creating values</a> is
+easy, though there is a small runtime cost to ensure the predicate:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> refined::{Refinement, RefinementError, boundable::unsigned::ClosedInterval};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TestScore</span> <span style="color:#f92672">=</span> Refinement<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span>, ClosedInterval<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span><span style="color:#f92672">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> good_score <span style="color:#f92672">=</span> <span style="color:#ae81ff">99</span><span style="color:#66d9ef">u8</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> buggy_score <span style="color:#f92672">=</span> <span style="color:#ae81ff">200</span><span style="color:#66d9ef">u8</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  TestScore::refine(good_score).unwrap(); <span style="color:#75715e">// TestScore
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  TestScore::refine(buggy_score).unwrap(); <span style="color:#75715e">// panic!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>Using values of a refined type is also easy via the
+<a href="https://docs.rs/refined/latest/refined/struct.Refinement.html#impl-Deref-for-Refinement%3CT,&#43;P%3E" target="_blank" rel="noopener">Deref impl for Refinement</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> refined::{Refinement, RefinementError, boundable::unsigned::ClosedInterval};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TestScore</span> <span style="color:#f92672">=</span> Refinement<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span>, ClosedInterval<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span><span style="color:#f92672">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// This function is from a foreign library that doesn&#39;t know about our TestScore type
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// fn classify_test_score(score: u8) -&gt; ScoreClassification;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> user_input <span style="color:#f92672">=</span> <span style="color:#ae81ff">99</span><span style="color:#66d9ef">u8</span>; <span style="color:#75715e">// In the real world, this would come from an external source that we don&#39;t have control over
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> score <span style="color:#f92672">=</span> TestScore::refine(good_score).expect(<span style="color:#e6db74">&#34;invalid score provided&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> classification <span style="color:#f92672">=</span> classify_test_score(<span style="color:#f92672">*</span>score);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There are a number of other
+<a href="https://docs.rs/refined/latest/refined/struct.Refinement.html#implementations" target="_blank" rel="noopener">convenience functions</a>
+implemented for <code>Refinement</code> to make it easier to work with as well, but we don&rsquo;t need to go through
+all of them here.</p>
+<p>Of course, I should mention that the <em>most</em> correct way to model this test score would be as an enum
+with 100 variants, but I&rsquo;m going to make the assumption that most of us would avoid that route.
+There are, however some
+<a href="https://lexi-lambda.github.io/blog/2020/11/01/names-are-not-type-safety/" target="_blank" rel="noopener">interesting thoughts</a> on
+when it might be worth using &ldquo;better&rdquo; type safety than a library like <code>refined</code> is able to provide.</p>
+<h2 id="parse-dont-validate">Parse, don&rsquo;t validate <a href="#parse-dont-validate" class="anchor">🔗</a></h2><p>One of my
+<a href="https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/" target="_blank" rel="noopener">all-time favorite blog posts</a>
+focuses on the difference between <em>parsing</em> and <em>validation</em>:</p>
+<blockquote>
+<p>Consider: what is a parser? Really, a parser is just a function that consumes less-structured
+input and produces more-structured output. By its very nature, a parser is a partial function —
+some values in the domain do not correspond to any value in the range — so all parsers must have
+some notion of failure.</p>
+</blockquote>
+<p>So, a parser might look something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">parse</span>(input: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; Result<span style="color:#f92672">&lt;</span>Output, SomeError<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><p>while a validator might look more like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">validate</span>(input: <span style="color:#a6e22e">Thing</span>) -&gt; <span style="color:#66d9ef">bool</span>
+</span></span></code></pre></div><p>The key concept here (and what <code>refined</code> provides) is that by having an <code>Output</code>, we <strong>know</strong> that
+our invariants must be met. In the latter case, when we have a <code>Thing</code> we might <em>think</em> that our
+invariants have been validated, <em>but there&rsquo;s no guarantee that it has</em>! Surely when the system is
+first implemented the validations might&rsquo;ve been correctly applied, but as systems evolve over time,
+mistakes are possible, and something like forgetting a validation is an easy mistake to make.</p>
+<p>My driving motivation behind <code>refined</code> was to create something that integrates seamlessly with
+<code>serde</code> in much the same way that the excellent <a href="https://crates.io/crates/validator" target="_blank" rel="noopener">validator</a>
+crate does for validation.</p>
+<p>With the <code>serde</code> feature enabled (it&rsquo;s on by default), we get the essence of &ldquo;parse, don&rsquo;t validate&rdquo;
+for free when using refinement types:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">use</span> refined::{Refinement, RefinementError, boolean::And, boundable::unsigned::{ClosedInterval, NonZero}, string::Trimmed};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> serde::{Serialize, Deserialize};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StudentName</span> <span style="color:#f92672">=</span> Refinement<span style="color:#f92672">&lt;</span>String, And<span style="color:#f92672">&lt;</span>Trimmed, NonZero<span style="color:#f92672">&gt;&gt;</span>; <span style="color:#75715e">// Name can&#39;t start or end with whitespace, and can&#39;t be the empty string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">TestScore</span> <span style="color:#f92672">=</span> Refinement<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span>, ClosedInterval<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">100</span><span style="color:#f92672">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#[derive(Debug, Deserialize, Serialize)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">TestResult</span> {
+</span></span><span style="display:flex;"><span>  name: <span style="color:#a6e22e">StudentName</span>,
+</span></span><span style="display:flex;"><span>  score: <span style="color:#a6e22e">TestScore</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>For me, this is power, and is a great demonstration of why I&rsquo;m a proponent of rich type systems.
+Domain invariants are now verified for us by the compiler, and a library ensures that they&rsquo;re
+maintained. Data can be modeled directly, and we can be sure that our values are always meeting the
+expectations that we have of them.</p>
+<h2 id="wrapping-up">Wrapping up <a href="#wrapping-up" class="anchor">🔗</a></h2><p>This was really just a quick tour of my motivation for creating <code>refined</code>. If you&rsquo;re interested in
+learning more, check out the
+<a href="https://docs.rs/refined/latest/refined/index.html" target="_blank" rel="noopener">crate documentation</a>. If you find any issues, or
+have any ideas for how the library could be improved, please
+<a href="https://github.com/jkaye2012/refined/issues/new?template=Blank&#43;issue" target="_blank" rel="noopener">open an issue</a> so that we can
+get it sorted out!</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/rust">rust</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>
