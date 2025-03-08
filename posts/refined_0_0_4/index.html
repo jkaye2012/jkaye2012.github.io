@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-    <title>Refinement in Rust: optimization, arithmetic, and stateful refinement | Organizing Chaos</title>
+    <title>Refinement in Rust: optimization, arithmetic, and stateful predicates | Organizing Chaos</title>
 
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
@@ -54,7 +54,7 @@
       
 
 <section id="single">
-  <h1 class="title">Refinement in Rust: optimization, arithmetic, and stateful refinement</h1>
+  <h1 class="title">Refinement in Rust: optimization, arithmetic, and stateful predicates</h1>
 
   <div class="tip">
     <time datetime="2025-03-08 00:00:00 &#43;0000 UTC">Mar 8, 2025</time>
@@ -62,7 +62,7 @@
       ·
     </span>
     <span>
-      1205 words
+      1209 words
     </span>
     <span class="split">
       ·
@@ -103,7 +103,7 @@ improvements.</p>
 <li><code>arithmetic</code>: a feature flag that allows relevant specializations of the
 <a href="https://docs.rs/refined/latest/refined/struct.Refinement.html" target="_blank" rel="noopener">Refinement</a> struct to be used
 directly with the arithmetic traits from <a href="https://doc.rust-lang.org/std/ops/index.html" target="_blank" rel="noopener">std::ops</a></li>
-<li>Stateful refinement: the ability for users to define
+<li>Stateful predicates: the ability for users to define
 <a href="https://docs.rs/refined/latest/refined/trait.StatefulPredicate.html" target="_blank" rel="noopener">StatefulPredicate</a>
 implementations, allowing for more efficient refinement in cases where applying predicate logic is
 both pure and computationally intensive</li>
@@ -241,7 +241,7 @@ the use of <code>generic_const_exprs</code>, so its stability cannot be guarante
 situations, but if you find an arithmetic operation that you think should be supported but is not,
 please <a href="https://github.com/jkaye2012/refined/issues/new" target="_blank" rel="noopener">let me know</a> so that we can get it added to
 the library.</p>
-<h1 id="stateful-refinement">Stateful refinement <a href="#stateful-refinement" class="anchor">🔗</a></h1><p>Stateful refinement allows for the use of
+<h1 id="stateful-predicates">Stateful predicates <a href="#stateful-predicates" class="anchor">🔗</a></h1><p>Stateful predicates, as the name suggests, allows for the use of
 <a href="https://docs.rs/refined/latest/refined/trait.StatefulPredicate.html" target="_blank" rel="noopener">predicates that contain state</a>.
 This is useful in situations where the &ldquo;materialization&rdquo; of a predicate is costly or prone to
 potential failure due to e.g. a dependency on an external resource.</p>

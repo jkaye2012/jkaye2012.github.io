@@ -9,7 +9,7 @@
     <lastBuildDate>Sat, 08 Mar 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Refinement in Rust: optimization, arithmetic, and stateful refinement</title>
+      <title>Refinement in Rust: optimization, arithmetic, and stateful predicates</title>
       <link>https://jkaye2012.github.io/posts/refined_0_0_4/</link>
       <pubDate>Sat, 08 Mar 2025 00:00:00 +0000</pubDate>
       <guid>https://jkaye2012.github.io/posts/refined_0_0_4/</guid>
