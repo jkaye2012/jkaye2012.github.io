@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Refinement in Rust: optimization, arithmetic, and stateful refinement | Organizing Chaos</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="v0.0.4 of refined has been released">
+<meta name="generator" content="Hugo 0.120.3">
+
+
+  <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+    <link rel="stylesheet" href="https://jkaye2012.github.io/css/custom.css">
+  
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+	<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	<a href="/posts">Archive</a>
+	<a href="/tags">Tags</a>
+	<a href="/about">About</a>
+
+	
+	<a href="/lexicon/">Lexicon</a>
+	
+	<a href="/follow/">Follow</a>
+	
+
+	
+</nav>
+
+    <main class="main">
+      
+
+<section id="single">
+  <h1 class="title">Refinement in Rust: optimization, arithmetic, and stateful refinement</h1>
+
+  <div class="tip">
+    <time datetime="2025-03-08 00:00:00 &#43;0000 UTC">Mar 8, 2025</time>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      1205 words
+    </span>
+    <span class="split">
+      ·
+    </span>
+    <span>
+      6 minute read
+    </span>
+  </div>
+
+
+  
+
+
+  <div class="content">
+    <!-- raw HTML omitted -->
+
+<hr />
+<figure class="text-center">
+    <p class="font-italic">
+      
+v0.0.4 of <a href="https://docs.rs/refined/latest/refined/">refined</a>, my library providing support for refinement types in Rust, has been released
+
+    </p>
+</figure>
+<hr />
+
+<!-- raw HTML omitted -->
+<p>In my <a href="https://jordankaye.dev/posts/refined/" target="_blank" rel="noopener">last post</a>, I announced the initial release of
+<code>refined</code>, a library providing support for
+<a href="https://en.wikipedia.org/wiki/Refinement_type" target="_blank" rel="noopener">refinement types</a> in Rust. Since the release, a
+number of interesting ideas have been contributed by the community. <code>v0.0.4</code> of the library has now
+been released, including support for three important new features along with a number of minor
+improvements.</p>
+<p>The major features that this post will focus on are:</p>
+<ul>
+<li><code>optimized</code>: a feature flag that allows runtime bounds checking to be elided via use of an
+<code>unsafe</code> optimization</li>
+<li><code>arithmetic</code>: a feature flag that allows relevant specializations of the
+<a href="https://docs.rs/refined/latest/refined/struct.Refinement.html" target="_blank" rel="noopener">Refinement</a> struct to be used
+directly with the arithmetic traits from <a href="https://doc.rust-lang.org/std/ops/index.html" target="_blank" rel="noopener">std::ops</a></li>
+<li>Stateful refinement: the ability for users to define
+<a href="https://docs.rs/refined/latest/refined/trait.StatefulPredicate.html" target="_blank" rel="noopener">StatefulPredicate</a>
+implementations, allowing for more efficient refinement in cases where applying predicate logic is
+both pure and computationally intensive</li>
+</ul>
+<h1 id="optimized">Optimized <a href="#optimized" class="anchor">🔗</a></h1><p>Shortly after the initial release of <code>refined</code>,
+<a href="https://github.com/jkaye2012/refined/issues/9" target="_blank" rel="noopener">an issue was raised</a> asking about the possibility of
+eliding bounds checks through the use of
+<a href="https://doc.rust-lang.org/std/hint/fn.assert_unchecked.html" target="_blank" rel="noopener">hint::assert_unchecked</a>. Given the
+design of <code>refined</code> and the guarantees that it provides, this seemed like an easy win for
+performance for those who are willing to opt in to <code>unsafe</code> behavior.</p>
+<p>When you turn on the <code>optimized</code> feature, you should notice no difference other than that the
+generated code is faster than it was before. To better understand the impact of this change, we can
+look at the generated assembly from a
+<a href="https://github.com/jkaye2012/refined/blob/main/examples/optimized/src/main.rs" target="_blank" rel="noopener">small example program</a>
+using <a href="https://github.com/pacak/cargo-show-asm/tree/master" target="_blank" rel="noopener">cargo-show-asm</a>.</p>
+<p>First, the code that we&rsquo;ll be inspecting:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-1"> 1</a></span><span><span style="color:#af3a03">use</span> refined::{boundable::unsigned::LessThan, prelude::<span style="color:#af3a03">*</span>};
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-2"> 2</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-3"> 3</a></span><span><span style="color:#af3a03">type</span> Size <span style="color:#af3a03">=</span> Refinement<span style="color:#af3a03">&lt;</span><span style="color:#b57614">usize</span>, LessThan<span style="color:#af3a03">&lt;</span><span style="color:#8f3f71">12</span><span style="color:#af3a03">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-4"> 4</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-5"> 5</a></span><span><span style="color:#427b58">#[no_mangle]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-6"> 6</a></span><span><span style="color:#af3a03">fn</span> <span style="color:#b57614">month_name</span>(s: <span style="color:#af3a03">&amp;</span>Size) -&gt; <span style="color:#af3a03">&amp;</span><span style="color:#b57614">&#39;static</span> <span style="color:#b57614">str</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-7"> 7</a></span><span>    <span style="color:#af3a03">const</span> <span style="color:#d3869b">MONTHS</span>: [<span style="color:#af3a03">&amp;</span><span style="color:#b57614">str</span>; <span style="color:#8f3f71">12</span>] <span style="color:#af3a03">=</span> [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-8"> 8</a></span><span>        <span style="color:#79740e">&#34;January&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-9"> 9</a></span><span>        <span style="color:#79740e">&#34;February&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-10">10</a></span><span>        <span style="color:#79740e">&#34;March&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-11">11</a></span><span>        <span style="color:#79740e">&#34;April&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-12"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-12">12</a></span><span>        <span style="color:#79740e">&#34;May&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-13"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-13">13</a></span><span>        <span style="color:#79740e">&#34;June&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-14"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-14">14</a></span><span>        <span style="color:#79740e">&#34;July&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-15"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-15">15</a></span><span>        <span style="color:#79740e">&#34;August&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-16"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-16">16</a></span><span>        <span style="color:#79740e">&#34;September&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-17"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-17">17</a></span><span>        <span style="color:#79740e">&#34;October&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-18"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-18">18</a></span><span>        <span style="color:#79740e">&#34;November&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-19"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-19">19</a></span><span>        <span style="color:#79740e">&#34;December&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-20"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-20">20</a></span><span>    ];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-21"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-21">21</a></span><span>    <span style="color:#d3869b">MONTHS</span>[<span style="color:#af3a03">**</span>s]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-22"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-22">22</a></span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-23"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-23">23</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-24"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-24">24</a></span><span><span style="color:#af3a03">fn</span> <span style="color:#b57614">main</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-25"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-25">25</a></span><span>    <span style="color:#af3a03">let</span> raw_index <span style="color:#af3a03">=</span> std::env::args()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-26"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-26">26</a></span><span>        .next_back()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-27"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-27">27</a></span><span>        .unwrap()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-28"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-28">28</a></span><span>        .parse::<span style="color:#af3a03">&lt;</span><span style="color:#b57614">usize</span><span style="color:#af3a03">&gt;</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-29"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-29">29</a></span><span>        .unwrap();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-30"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-30">30</a></span><span>    <span style="color:#af3a03">let</span> index <span style="color:#af3a03">=</span> Size::refine(raw_index).unwrap();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-31"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-31">31</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-32"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-32">32</a></span><span>    println!(<span style="color:#79740e">&#34;</span><span style="color:#79740e">{}</span><span style="color:#79740e">&#34;</span>, month_name(<span style="color:#af3a03">&amp;</span>index));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-0-33"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-0-33">33</a></span><span>}
+</span></span></code></pre></div><p>In &ldquo;standard&rdquo; Rust (using a <code>u8</code> as the argument to <code>month_name</code> rather than the <code>Size</code> refinement),
+a bounds check on the array access is required. Looking at the generated assembly without
+<code>optimized</code>, we can see that <code>refined</code> shares this behavior:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-1-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-1-1">1</a></span><span>$ cargo asm -p refined-optimized --bin refined-optimized month_name
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-1-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-1-2">2</a></span><span>   Finished <span style="color:#79740e">`</span>release<span style="color:#79740e">`</span> profile <span style="color:#af3a03">[</span>optimized<span style="color:#af3a03">]</span> target<span style="color:#af3a03">(</span>s<span style="color:#af3a03">)</span> in 0.01s
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-1"> 1</a></span><span><span style="color:#79740e;font-weight:bold">.section</span> <span style="color:#d3869b">.text.month_name</span>,<span style="color:#79740e">&#34;ax&#34;</span>,<span style="color:#79740e;font-weight:bold">@progbits</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-2"> 2</a></span><span>        <span style="color:#79740e;font-weight:bold">.globl</span>  <span style="color:#d3869b">month_name</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-3"> 3</a></span><span>        <span style="color:#79740e;font-weight:bold">.p2align</span>        <span style="color:#8f3f71">4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-4"> 4</a></span><span><span style="color:#79740e;font-weight:bold">.type</span>   <span style="color:#d3869b">month_name</span>,<span style="color:#79740e;font-weight:bold">@function</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-5"> 5</a></span><span><span style="color:#9d0006">month_name:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-6"> 6</a></span><span>        <span style="color:#79740e;font-weight:bold">.cfi_startproc</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-7"> 7</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rdi</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rdi</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-8"> 8</a></span><span>        <span style="color:#b57614">cmp</span> <span style="color:#d3869b">rdi</span>, <span style="color:#8f3f71">11</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-9"> 9</a></span><span>        <span style="color:#b57614">ja</span> <span style="color:#d3869b">.LBB11_2</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-10">10</a></span><span>        <span style="color:#b57614">shl</span> <span style="color:#d3869b">rdi</span>, <span style="color:#8f3f71">4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-11">11</a></span><span>        <span style="color:#b57614">lea</span> <span style="color:#d3869b">rcx</span>, [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">.L__unnamed_9</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-12"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-12">12</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rax</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rdi</span> + <span style="color:#d3869b">rcx</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-13"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-13">13</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rdx</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rdi</span> + <span style="color:#d3869b">rcx</span> + <span style="color:#8f3f71">8</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-14"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-14">14</a></span><span>        <span style="color:#b57614">ret</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-15"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-15">15</a></span><span><span style="color:#9d0006">.LBB11_2:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-16"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-16">16</a></span><span>        <span style="color:#b57614">push</span> <span style="color:#d3869b">rax</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-17"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-17">17</a></span><span>        <span style="color:#79740e;font-weight:bold">.cfi_def_cfa_offset</span> <span style="color:#8f3f71">16</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-18"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-18">18</a></span><span>        <span style="color:#b57614">lea</span> <span style="color:#d3869b">rdx</span>, [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">.L__unnamed_10</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-19"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-19">19</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">esi</span>, <span style="color:#8f3f71">12</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-2-20"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-2-20">20</a></span><span>        <span style="color:#b57614">call</span> <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">core</span>::<span style="color:#d3869b">panicking</span>::<span style="color:#d3869b">panic_bounds_check@GOTPCREL</span>]
+</span></span></code></pre></div><p>For those unfamiliar with assembly, the bounds check is right around the start of the function; if
+the input argument is greater than 11, we drop into a panic handler:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-1"> 1</a></span><span><span style="color:#79740e;font-weight:bold">...</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-2"> 2</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rdi</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rdi</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-3"> 3</a></span><span>        <span style="color:#b57614">cmp</span> <span style="color:#d3869b">rdi</span>, <span style="color:#8f3f71">11</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-4"> 4</a></span><span>        <span style="color:#b57614">ja</span> <span style="color:#d3869b">.LBB11_2</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-5"> 5</a></span><span><span style="color:#79740e;font-weight:bold">...</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-6"> 6</a></span><span><span style="color:#9d0006">.LBB11_2:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-7"> 7</a></span><span>        <span style="color:#b57614">push</span> <span style="color:#d3869b">rax</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-8"> 8</a></span><span>        <span style="color:#79740e;font-weight:bold">.cfi_def_cfa_offset</span> <span style="color:#8f3f71">16</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-9"> 9</a></span><span>        <span style="color:#b57614">lea</span> <span style="color:#d3869b">rdx</span>, [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">.L__unnamed_10</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-10">10</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">esi</span>, <span style="color:#8f3f71">12</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-3-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-3-11">11</a></span><span>        <span style="color:#b57614">call</span> <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">core</span>::<span style="color:#d3869b">panicking</span>::<span style="color:#d3869b">panic_bounds_check@GOTPCREL</span>]
+</span></span></code></pre></div><p>Taking a look at enabling <code>optimized</code>, we can see that this bounds check is no longer generated:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-4-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-4-1">1</a></span><span>$ cargo asm -p refined-optimized --bin refined-optimized month_name --features optimized
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-4-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-4-2">2</a></span><span>    Finished <span style="color:#79740e">`</span>release<span style="color:#79740e">`</span> profile <span style="color:#af3a03">[</span>optimized<span style="color:#af3a03">]</span> target<span style="color:#af3a03">(</span>s<span style="color:#af3a03">)</span> in 0.01s
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-1"> 1</a></span><span><span style="color:#79740e;font-weight:bold">.section</span> <span style="color:#d3869b">.text.month_name</span>,<span style="color:#79740e">&#34;ax&#34;</span>,<span style="color:#79740e;font-weight:bold">@progbits</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-2"> 2</a></span><span>        <span style="color:#79740e;font-weight:bold">.globl</span>  <span style="color:#d3869b">month_name</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-3"> 3</a></span><span>        <span style="color:#79740e;font-weight:bold">.p2align</span>        <span style="color:#8f3f71">4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-4"> 4</a></span><span><span style="color:#79740e;font-weight:bold">.type</span>   <span style="color:#d3869b">month_name</span>,<span style="color:#79740e;font-weight:bold">@function</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-5"> 5</a></span><span><span style="color:#9d0006">month_name:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-6"> 6</a></span><span>        <span style="color:#79740e;font-weight:bold">.cfi_startproc</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-7"> 7</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rcx</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rdi</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-8"> 8</a></span><span>        <span style="color:#b57614">shl</span> <span style="color:#d3869b">rcx</span>, <span style="color:#8f3f71">4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-9"> 9</a></span><span>        <span style="color:#b57614">lea</span> <span style="color:#d3869b">rdx</span>, [<span style="color:#d3869b">rip</span> + <span style="color:#d3869b">.L__unnamed_9</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-10">10</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rax</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rcx</span> + <span style="color:#d3869b">rdx</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-11">11</a></span><span>        <span style="color:#b57614">mov</span> <span style="color:#d3869b">rdx</span>, <span style="color:#d3869b">qword</span> <span style="color:#d3869b">ptr</span> [<span style="color:#d3869b">rcx</span> + <span style="color:#d3869b">rdx</span> + <span style="color:#8f3f71">8</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-5-12"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-5-12">12</a></span><span>        <span style="color:#b57614">ret</span>
+</span></span></code></pre></div><p>Because <code>refined</code> knows that the predicate must always hold, the bounds check is entirely spurious.
+Critically, this optimization <em>removes a branch point</em> from the generated code, which could
+significantly improve performance if the code path is used infrequently enough that good branch
+prediction cannot come into play. In any case, removing checks that aren&rsquo;t required is a Good Thing
+for performance; as such, once the feature has had time for some testing in the wild to prove its
+soundness, it will likely become a default feature of <code>refined</code>.</p>
+<h1 id="arithmetic">Arithmetic <a href="#arithmetic" class="anchor">🔗</a></h1><p>Many of the <a href="https://docs.rs/refined/latest/refined/trait.Predicate.html" target="_blank" rel="noopener">provided predicates</a> in
+<code>refined</code> are numeric. A particularly common case is the desire to constrain numeric values to a
+subset of the possible values inhabited by the type. These bounding constraints create integral
+ranges, allowing for implementation of
+<a href="https://en.wikipedia.org/wiki/Interval_arithmetic" target="_blank" rel="noopener">interval arithmetic</a> for such types in some
+situations. This in turn allows <code>refined</code> to provide &ldquo;refined arithmetic&rdquo; with proven bounds that
+are verified at compile time rather than at run time when the <code>arithmetic</code> feature is enabled.</p>
+<p>Similar to <a href="https://docs.rs/refined/latest/refined/#implication" target="_blank" rel="noopener">implication</a>, this feature requires
+the use of <code>generic_const_exprs</code>, so its stability cannot be guaranteed.</p>
+<p>Here&rsquo;s a straightforward example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-1"> 1</a></span><span><span style="color:#427b58">#![allow(incomplete_features)]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-2"> 2</a></span><span><span style="color:#427b58">#![feature(generic_const_exprs)]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-3"> 3</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-4"> 4</a></span><span><span style="color:#af3a03">use</span> refined::{prelude::<span style="color:#af3a03">*</span>, boundable::unsigned::ClosedInterval};
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-5"> 5</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-6"> 6</a></span><span><span style="color:#af3a03">type</span> Larger <span style="color:#af3a03">=</span> Refinement<span style="color:#af3a03">&lt;</span><span style="color:#b57614">u16</span>, ClosedInterval<span style="color:#af3a03">&lt;</span><span style="color:#8f3f71">100</span>, <span style="color:#8f3f71">1000</span><span style="color:#af3a03">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-7"> 7</a></span><span><span style="color:#af3a03">type</span> Smaller <span style="color:#af3a03">=</span> Refinement<span style="color:#af3a03">&lt;</span><span style="color:#b57614">u16</span>, ClosedInterval<span style="color:#af3a03">&lt;</span><span style="color:#8f3f71">50</span>, <span style="color:#8f3f71">500</span><span style="color:#af3a03">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-8"> 8</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-9"> 9</a></span><span><span style="color:#af3a03">fn</span> <span style="color:#b57614">main</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-10">10</a></span><span>  <span style="color:#af3a03">let</span> larger <span style="color:#af3a03">=</span> Larger::refine(<span style="color:#8f3f71">500</span>).unwrap();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-11">11</a></span><span>  <span style="color:#af3a03">let</span> smaller <span style="color:#af3a03">=</span> Smaller::refine(<span style="color:#8f3f71">100</span>).unwrap();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-12"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-12">12</a></span><span>  <span style="color:#928374;font-style:italic">// Type annotation not required; provided for clarity
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-13"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-13">13</a></span><span><span style="color:#928374;font-style:italic"></span>  <span style="color:#af3a03">let</span> result: Refinement<span style="color:#af3a03">&lt;</span><span style="color:#b57614">u16</span>, ClosedInterval<span style="color:#af3a03">&lt;</span><span style="color:#8f3f71">0</span>, <span style="color:#8f3f71">20</span><span style="color:#af3a03">&gt;&gt;</span> <span style="color:#af3a03">=</span> larger <span style="color:#af3a03">/</span> smaller;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-14"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-14">14</a></span><span>  assert_eq!(<span style="color:#af3a03">*</span>result, <span style="color:#8f3f71">5</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-6-15"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-6-15">15</a></span><span>}
+</span></span></code></pre></div><p>I&rsquo;ve attempted to implement all combinations of interval arithmetic that I believe are sound in all
+situations, but if you find an arithmetic operation that you think should be supported but is not,
+please <a href="https://github.com/jkaye2012/refined/issues/new" target="_blank" rel="noopener">let me know</a> so that we can get it added to
+the library.</p>
+<h1 id="stateful-refinement">Stateful refinement <a href="#stateful-refinement" class="anchor">🔗</a></h1><p>Stateful refinement allows for the use of
+<a href="https://docs.rs/refined/latest/refined/trait.StatefulPredicate.html" target="_blank" rel="noopener">predicates that contain state</a>.
+This is useful in situations where the &ldquo;materialization&rdquo; of a predicate is costly or prone to
+potential failure due to e.g. a dependency on an external resource.</p>
+<p>A motivating example is the
+<a href="https://docs.rs/refined/latest/refined/string/struct.Regex.html" target="_blank" rel="noopener">Regex predicate</a>. Regular
+expressions are often costly to compile; if you find yourself in a situation where you need to
+refine many different values using the same regular expression, your program would previously spend
+the majority of its time in refinement re-compiling the same regex over and over for each value&rsquo;s
+refinement. Stateful refinement solves this problem by allowing us to cache the compiled predicate
+for re-use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#3c3836;background-color:#fbf1c7;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-1"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-1"> 1</a></span><span><span style="color:#af3a03">use</span> refined::{prelude::<span style="color:#af3a03">*</span>, string::Regex};
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-2"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-2"> 2</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-3"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-3"> 3</a></span><span>type_string!(FiveLowercaseLetters, <span style="color:#79740e">&#34;^[a-z]{5}$&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-4"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-4"> 4</a></span><span><span style="color:#af3a03">type</span> FiveLower <span style="color:#af3a03">=</span> Refinement<span style="color:#af3a03">&lt;</span><span style="color:#b57614">String</span>, Regex<span style="color:#af3a03">&lt;</span>FiveLowercaseLetters<span style="color:#af3a03">&gt;&gt;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-5"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-5"> 5</a></span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-6"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-6"> 6</a></span><span><span style="color:#af3a03">fn</span> <span style="color:#b57614">main</span>() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-7"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-7"> 7</a></span><span>    <span style="color:#af3a03">let</span> predicate <span style="color:#af3a03">=</span> Regex::<span style="color:#af3a03">&lt;</span>FiveLowercaseLetters<span style="color:#af3a03">&gt;</span>::default(); <span style="color:#928374;font-style:italic">// Compiles the regex
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-8"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-8"> 8</a></span><span><span style="color:#928374;font-style:italic"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-9"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-9"> 9</a></span><span>    <span style="color:#928374;font-style:italic">// Same regex re-used for each refinement
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-10"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-10">10</a></span><span><span style="color:#928374;font-style:italic"></span>    <span style="color:#af3a03">let</span> good1 <span style="color:#af3a03">=</span> FiveLower::refine_with_state(<span style="color:#af3a03">&amp;</span>predicate, <span style="color:#79740e">&#34;abcde&#34;</span>.to_string());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-11"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-11">11</a></span><span>    assert!(good1.is_ok());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-12"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-12">12</a></span><span>    <span style="color:#af3a03">let</span> good2 <span style="color:#af3a03">=</span> FiveLower::refine_with_state(<span style="color:#af3a03">&amp;</span>predicate, <span style="color:#79740e">&#34;zzzzz&#34;</span>.to_string());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-13"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-13">13</a></span><span>    assert!(good2.is_ok());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-14"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-14">14</a></span><span>    <span style="color:#af3a03">let</span> bad <span style="color:#af3a03">=</span> FiveLower::refine_with_state(<span style="color:#af3a03">&amp;</span>predicate, <span style="color:#79740e">&#34;AAAAA&#34;</span>.to_string());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-15"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-15">15</a></span><span>    assert!(bad.is_err());
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#9d9b9a" id="hl-7-16"><a style="outline:none;text-decoration:none;color:inherit" href="#hl-7-16">16</a></span><span>}
+</span></span></code></pre></div><p>Note that the regular expression functionality is kept behind the <code>regex</code> feature flag to prevent an
+unnecessary dependency for those who don&rsquo;t need it, but this does not affect the core stateful
+functionality (which is always available).</p>
+<h1 id="wrapping-up">Wrapping up <a href="#wrapping-up" class="anchor">🔗</a></h1><p>v0.0.4 included a few other small changes, including a
+<a href="https://github.com/jkaye2012/refined/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">contribution guide</a> for new
+contributors to the project. A complete list of all changes can be found in
+<a href="https://github.com/jkaye2012/refined/blob/main/CHANGELOG.md#004---2025-03-02" target="_blank" rel="noopener">the changelog</a>.</p>
+<p>The library is quickly reaching a stable state where I&rsquo;ll be releasing a major version to indicate
+ongoing, stable support for the existing functionality as I continue to build it out over time.
+Please reach out or drop me an issue if you have any ideas for future improvements or additions!</p>
+
+  </div>
+
+  
+  <div class="tags">
+    
+    <a href="https://jkaye2012.github.io/%20tags/rust">rust</a>
+    
+    <a href="https://jkaye2012.github.io/%20tags/refined">refined</a>
+    
+  </div>
+  
+
+  <h2 style="text-align: center;">Enjoyed the post?<br /> Please consider <a href="/follow">following for new post
+        notifications!</a></h2>
+  
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+    <div id="social">
+
+
+    <a class="symbol" href="https://github.com/jkaye2012" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="https://www.linkedin.com/in/jordan-kaye-8bb64537/" rel="me" target="_blank">
+        
+        <svg width="28" height="28" fill="#bbbbbb" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="500" height="500" fill="#bbbbbb" rx="50"/>
+    <path fill="#FFF" d="M154.703 100.183c-19.121 0-34.689 15.565-34.703 34.701 0 19.136 15.568 34.704 34.703 34.704 19.128 0 34.688-15.568 34.688-34.704 0-19.134-15.561-34.701-34.688-34.701zm26.045 83.348h-52.094a4.488 4.488 0 0 0-4.488 4.489v167.675a4.488 4.488 0 0 0 4.488 4.488h52.093a4.49 4.49 0 0 0 4.489-4.488V188.02a4.486 4.486 0 0 0-4.488-4.489zm133.176-1.974c-19.064 0-35.817 5.805-46.04 15.271v-8.808c0-2.48-2.01-4.489-4.489-4.489h-49.971a4.489 4.489 0 0 0-4.489 4.489v167.675a4.488 4.488 0 0 0 4.489 4.488h52.044a4.49 4.49 0 0 0 4.489-4.488v-82.957c0-23.802 4.378-38.555 26.227-38.555 21.526.026 23.137 15.846 23.137 39.977v81.535a4.489 4.489 0 0 0 4.49 4.488h52.068a4.489 4.489 0 0 0 4.488-4.488v-91.977c-.001-38.253-7.553-82.161-66.443-82.161z"/>
+  </g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+        
+        Copyright 2023 | Jordan Kaye
+        
+    </div>
+
+    
+</footer>
+
+
+  </body>
+</html>

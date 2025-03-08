@@ -6,8 +6,15 @@
     <description>Recent content in rust on Organizing Chaos</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 08 Mar 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jkaye2012.github.io/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Refinement in Rust: optimization, arithmetic, and stateful refinement</title>
+      <link>https://jkaye2012.github.io/posts/refined_0_0_4/</link>
+      <pubDate>Sat, 08 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/refined_0_0_4/</guid>
+      <description>v0.0.4 of refined has been released</description>
+    </item>
     <item>
       <title>Refined: simple refinement types for Rust</title>
       <link>https://jkaye2012.github.io/posts/refined/</link>

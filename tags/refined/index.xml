@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>refined on Organizing Chaos</title>
+    <link>https://jkaye2012.github.io/tags/refined/</link>
+    <description>Recent content in refined on Organizing Chaos</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 08 Mar 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jkaye2012.github.io/tags/refined/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Refinement in Rust: optimization, arithmetic, and stateful refinement</title>
+      <link>https://jkaye2012.github.io/posts/refined_0_0_4/</link>
+      <pubDate>Sat, 08 Mar 2025 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/refined_0_0_4/</guid>
+      <description>v0.0.4 of refined has been released</description>
+    </item>
+    <item>
+      <title>Refined: simple refinement types for Rust</title>
+      <link>https://jkaye2012.github.io/posts/refined/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>https://jkaye2012.github.io/posts/refined/</guid>
+      <description>An alpha library for refinement types with rich support for serde</description>
+    </item>
+  </channel>
+</rss>
